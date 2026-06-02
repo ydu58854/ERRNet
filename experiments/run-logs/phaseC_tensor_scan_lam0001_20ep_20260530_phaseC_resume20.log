@@ -1,0 +1,12 @@
+[start] 2026-05-30T03:05:30+08:00
+checkpoint=/inspire/hdd/global_user/yanjunchi-24040/dyh/数字图像处理/ERRNet/checkpoints/errnet_phaseC_exclusion_lam0001_10ep/errnet_020_00154640.pt
+85b2d5e412fe232a3d923a7d76c60c2964c0c963746430e049996b5cc2b866c6  /inspire/hdd/global_user/yanjunchi-24040/dyh/数字图像处理/ERRNet/checkpoints/errnet_phaseC_exclusion_lam0001_10ep/errnet_020_00154640.pt
+epoch=20
+iteration=None
+tensors=488
+elements=56860259
+floating_tensors=488
+floating_elements=56860259
+nonfinite=0
+result=finite
+[end] 2026-05-30T03:05:34+08:00 status=0

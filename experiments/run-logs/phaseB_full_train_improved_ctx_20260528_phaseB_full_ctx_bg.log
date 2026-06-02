@@ -1,0 +1,5 @@
+[train-bg] errnet_phaseB_full_improved_ctx
+[source] checkpoints/errnet_improved_retrain_60ep/errnet_060_00470708.pt
+[run] 20260528_phaseB_full_ctx_bg
+[start] 2026-05-28 19:35:28 +0800
+stty: 'standard input': Inappropriate ioctl for device

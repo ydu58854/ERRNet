@@ -1,0 +1,368 @@
+COMMAND: conda run --no-capture-output -n errnet env PYTHONNOUSERSITE=1 python test_errnet.py --name errnet_phaseB_quick_baseline_ctx_real20 --dataset real20 --save_subdir phaseB_quick_baseline_ctx_real20 -r --icnn_path checkpoints/errnet_phaseB_quick_baseline_ctx/errnet_080_00471700.pt --hyper --nThreads 0
+START: 2026-05-27T20:01:44+08:00
+ORIGIN: baseline
+UNALIGNED_LOSS: ctx
+CHECKPOINT: checkpoints/errnet_phaseB_quick_baseline_ctx/errnet_080_00471700.pt
+DATASET: real20
+stty: 'standard input': Inappropriate ioctl for device
+------------ Options -------------
+batchSize: 1
+checkpoints_dir: ./checkpoints
+debug: False
+display_freq: 100
+display_id: 0
+display_port: 8097
+display_single_pane_ncols: 0
+display_winsize: 256
+fineSize: 224,224
+gan_type: rasgan
+gpu_ids: [0]
+gradient_loss_weight: 0.4
+high_gamma: 1.3
+high_sigma: 5
+hyper: True
+icnn_path: checkpoints/errnet_phaseB_quick_baseline_ctx/errnet_080_00471700.pt
+inet: errnet
+init_type: edsr
+isTrain: True
+lambda_gan: 0.01
+lambda_vgg: 0.1
+loadSize: 224,336,448
+low_gamma: 1.3
+low_sigma: 2
+lr: 0.0001
+max_dataset_size: None
+model: errnet_model
+nEpochs: 60
+nThreads: 0
+name: errnet_phaseB_quick_baseline_ctx_real20
+no_flip: False
+no_html: False
+no_log: False
+no_verbose: False
+pixel_loss_weight: 0.2
+print_freq: 100
+resize_or_crop: resize_and_crop
+resume: True
+resume_epoch: None
+save_epoch_freq: 10
+save_iter_freq: 0
+seed: 2018
+serial_batches: False
+unaligned_loss: vgg
+update_html_freq: 1000
+vgg_layer: 31
+wd: 0
+which_model_D: disc_vgg
+-------------- End ----------------
+[i] initialization method [edsr]
+Resume from epoch 80, iteration 471700
+--------------------- Model ---------------------
+##################### NetG #####################
+DRNet(
+  (conv1): ConvLayer(
+    (conv2d): Conv2d(1475, 256, kernel_size=(1, 1), stride=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (conv2): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (conv3): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (res_module): Sequential(
+    (0): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (2): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (3): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (4): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (5): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (6): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (7): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (8): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (9): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (10): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (11): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (12): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (deconv1): ConvLayer(
+    (conv2d): ConvTranspose2d(256, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (deconv2): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (pyramid_module): PyramidPooling(
+    (stages): ModuleList(
+      (0): Sequential(
+        (0): AvgPool2d(kernel_size=(4, 4), stride=(4, 4), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (1): Sequential(
+        (0): AvgPool2d(kernel_size=(8, 8), stride=(8, 8), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (2): Sequential(
+        (0): AvgPool2d(kernel_size=(16, 16), stride=(16, 16), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (3): Sequential(
+        (0): AvgPool2d(kernel_size=(32, 32), stride=(32, 32), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+    )
+    (bottleneck): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+    (relu): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (deconv3): ConvLayer(
+    (conv2d): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+)
+Total number of parameters: 18953379
+The size of receptive field: 113
+ [>................................................................]  Step: 5s538ms | Tot: 0ms | LMSE: 0.0233 | NCC: 0.8649 | PSNR: 19.5820 | SSIM: 0.7409 |  1/20  [===>.............................................................]  Step: 3s222ms | Tot: 3s222ms | LMSE: 0.0270 | NCC: 0.6167 | PSNR: 18.3321 | SSIM: 0.7056 |  2/20  [======>..........................................................]  Step: 3s97ms | Tot: 6s320ms | LMSE: 0.0217 | NCC: 0.7400 | PSNR: 22.4166 | SSIM: 0.7636 |  3/20  [=========>.......................................................]  Step: 3s119ms | Tot: 9s440ms | LMSE: 0.0236 | NCC: 0.7720 | PSNR: 22.3513 | SSIM: 0.7725 |  4/20  [=============>...................................................]  Step: 2s995ms | Tot: 12s435ms | LMSE: 0.0317 | NCC: 0.7830 | PSNR: 21.3546 | SSIM: 0.7346 |  5/20  [================>................................................]  Step: 3s146ms | Tot: 15s582ms | LMSE: 0.0299 | NCC: 0.7938 | PSNR: 21.1215 | SSIM: 0.7380 |  6/20  [===================>.............................................]  Step: 2s834ms | Tot: 18s416ms | LMSE: 0.0258 | NCC: 0.8228 | PSNR: 23.3835 | SSIM: 0.7688 |  7/20  [======================>..........................................]  Step: 2s992ms | Tot: 21s409ms | LMSE: 0.0254 | NCC: 0.8393 | PSNR: 23.5730 | SSIM: 0.7765 |  8/20  [==========================>......................................]  Step: 1s466ms | Tot: 22s876ms | LMSE: 0.0297 | NCC: 0.8324 | PSNR: 23.2521 | SSIM: 0.7651 |  9/20  [=============================>...................................]  Step: 3s318ms | Tot: 26s194ms | LMSE: 0.0272 | NCC: 0.8458 | PSNR: 23.6147 | SSIM: 0.7789 |  10/20  [================================>................................]  Step: 1s677ms | Tot: 27s872ms | LMSE: 0.0250 | NCC: 0.8571 | PSNR: 23.7984 | SSIM: 0.7913 |  11/20  [===================================>.............................]  Step: 1s203ms | Tot: 29s75ms | LMSE: 0.0238 | NCC: 0.8654 | PSNR: 23.8973 | SSIM: 0.7994 |  12/20  [=======================================>.........................]  Step: 938ms | Tot: 30s13ms | LMSE: 0.0237 | NCC: 0.8686 | PSNR: 24.0581 | SSIM: 0.8069 |  13/20  [==========================================>......................]  Step: 2s644ms | Tot: 32s657ms | LMSE: 0.0232 | NCC: 0.8737 | PSNR: 23.8574 | SSIM: 0.8107 |  14/20  [=============================================>...................]  Step: 715ms | Tot: 33s373ms | LMSE: 0.0218 | NCC: 0.8752 | PSNR: 23.7439 | SSIM: 0.8175 |  15/20  [================================================>................]  Step: 729ms | Tot: 34s102ms | LMSE: 0.0211 | NCC: 0.8776 | PSNR: 23.3395 | SSIM: 0.8162 |  16/20  [====================================================>............]  Step: 1s221ms | Tot: 35s323ms | LMSE: 0.0210 | NCC: 0.8792 | PSNR: 23.0326 | SSIM: 0.8190 |  17/20  [=======================================================>.........]  Step: 778ms | Tot: 36s102ms | LMSE: 0.0203 | NCC: 0.8842 | PSNR: 23.1365 | SSIM: 0.8225 |  18/20  [==========================================================>......]  Step: 2s545ms | Tot: 38s648ms | LMSE: 0.0200 | NCC: 0.8891 | PSNR: 23.3960 | SSIM: 0.8273 |  19/20  [=============================================================>...]  Step: 819ms | Tot: 39s467ms | LMSE: 0.0197 | NCC: 0.8922 | PSNR: 23.4039 | SSIM: 0.8301 |  20/20 
+LMSE: 0.0197 | NCC: 0.8922 | PSNR: 23.4039 | SSIM: 0.8301 | 
+END: 2026-05-27T20:02:34+08:00
+STATUS: 0

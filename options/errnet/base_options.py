@@ -21,6 +21,8 @@ class BaseOptions(Base):
         if not self.initialized:
             self.initialize()
         self.opt = self.parser.parse_args()
+        if hasattr(self, 'postprocess_options'):
+            self.postprocess_options(self.opt)
         self.opt.isTrain = self.isTrain   # train or test
 
         torch.backends.cudnn.deterministic = True

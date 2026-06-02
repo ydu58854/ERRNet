@@ -1,0 +1,5 @@
+COMMAND: timeout 90s conda run -n ERRNet python train_errnet.py --name errnet_improved_retrain_60ep --hyper --pixel_loss_weight 0.2 --gradient_loss_weight 0.4
+START: 2026-05-26T19:40:29+08:00
+
+END: 2026-05-26T19:41:59+08:00
+EXIT_STATUS: 124

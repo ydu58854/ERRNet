@@ -1,0 +1,875 @@
+stty: 'standard input': Inappropriate ioctl for device
+------------ Options -------------
+batchSize: 1
+checkpoints_dir: ./checkpoints
+debug: False
+display_freq: 100
+display_id: 0
+display_port: 8097
+display_single_pane_ncols: 0
+display_winsize: 256
+fineSize: 224,224
+gan_type: rasgan
+gpu_ids: [0]
+gradient_loss_weight: 0.4
+high_gamma: 1.3
+high_sigma: 5
+hyper: True
+icnn_path: None
+inet: errnet
+init_type: edsr
+isTrain: True
+lambda_exclusion: 0.001
+lambda_gan: 0.01
+lambda_vgg: 0.1
+loadSize: 224,336,448
+low_gamma: 1.3
+low_sigma: 2
+lr: 0.0001
+max_dataset_size: 2
+model: errnet_model
+nEpochs: 60
+nThreads: 0
+name: errnet_phaseC_exclusion_smoke
+no_flip: False
+no_html: False
+no_log: False
+no_verbose: False
+pixel_loss_weight: 0.2
+print_freq: 100
+resize_or_crop: resize_and_crop
+resume: False
+resume_epoch: None
+save_epoch_freq: 10
+save_iter_freq: 1
+seed: 2018
+serial_batches: False
+unaligned_loss: vgg
+update_html_freq: 1000
+vgg_layer: 31
+wd: 0
+which_model_D: disc_vgg
+-------------- End ----------------
+[i] reflection sythesis model: {'kernel_sizes': [11], 'low_sigma': 2, 'high_sigma': 5, 'low_gamma': 1.3, 'high_gamma': 1.3}
+[i] using a fusion dataset: 90 [1, 89] imgs fused with ratio [0.7, 0.3]
+[i] initialization method [edsr]
+[i] initialization method [kaiming]
+--------------------- Model ---------------------
+##################### NetG #####################
+DRNet(
+  (conv1): ConvLayer(
+    (conv2d): Conv2d(1475, 256, kernel_size=(1, 1), stride=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (conv2): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (conv3): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (res_module): Sequential(
+    (0): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (2): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (3): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (4): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (5): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (6): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (7): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (8): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (9): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (10): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (11): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (12): ResidualBlock(
+      res_scale=0.1
+      (conv1): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (act): ReLU(inplace=True)
+      )
+      (conv2): ConvLayer(
+        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (se_layer): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=32, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=32, out_features=256, bias=True)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (deconv1): ConvLayer(
+    (conv2d): ConvTranspose2d(256, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (deconv2): ConvLayer(
+    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+  (pyramid_module): PyramidPooling(
+    (stages): ModuleList(
+      (0): Sequential(
+        (0): AvgPool2d(kernel_size=(4, 4), stride=(4, 4), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (1): Sequential(
+        (0): AvgPool2d(kernel_size=(8, 8), stride=(8, 8), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (2): Sequential(
+        (0): AvgPool2d(kernel_size=(16, 16), stride=(16, 16), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (3): Sequential(
+        (0): AvgPool2d(kernel_size=(32, 32), stride=(32, 32), padding=0)
+        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+    )
+    (bottleneck): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+    (relu): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (deconv3): ConvLayer(
+    (conv2d): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+    (act): ReLU(inplace=True)
+  )
+)
+Total number of parameters: 18953379
+The size of receptive field: 113
+##################### NetD #####################
+Discriminator_VGG(
+  (body): Sequential(
+    (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.2)
+    (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (3): GroupNorm(32, 64, eps=1e-05, affine=True)
+    (4): LeakyReLU(negative_slope=0.2)
+    (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (6): GroupNorm(32, 128, eps=1e-05, affine=True)
+    (7): LeakyReLU(negative_slope=0.2)
+    (8): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (9): GroupNorm(32, 128, eps=1e-05, affine=True)
+    (10): LeakyReLU(negative_slope=0.2)
+    (11): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (12): GroupNorm(32, 256, eps=1e-05, affine=True)
+    (13): LeakyReLU(negative_slope=0.2)
+    (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (15): GroupNorm(32, 256, eps=1e-05, affine=True)
+    (16): LeakyReLU(negative_slope=0.2)
+    (17): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (18): GroupNorm(32, 512, eps=1e-05, affine=True)
+    (19): LeakyReLU(negative_slope=0.2)
+    (20): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (21): GroupNorm(32, 512, eps=1e-05, affine=True)
+    (22): LeakyReLU(negative_slope=0.2)
+    (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (24): GroupNorm(32, 512, eps=1e-05, affine=True)
+    (25): LeakyReLU(negative_slope=0.2)
+    (26): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (27): GroupNorm(32, 512, eps=1e-05, affine=True)
+    (28): LeakyReLU(negative_slope=0.2)
+  )
+  (tail): Sequential(
+    (0): AdaptiveAvgPool2d(output_size=1)
+    (1): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
+    (2): LeakyReLU(negative_slope=0.2)
+    (3): Conv2d(1024, 1, kernel_size=(1, 1), stride=(1, 1))
+  )
+)
+Total number of parameters: 9937089
+The size of receptive field: 125
+create web directory ./checkpoints/errnet_phaseC_exclusion_smoke/web...
+[i] set learning rate to 0.0001
+
+Epoch: 0
+ [>................................................................]  Step: 5s989ms | Tot: 0ms | Excl: 2.0611 | IPixel: 0.0839 | VGG: 5.2141 |  1/90 saving the latest model at iter 1
+ [>................................................................]  Step: 350ms | Tot: 350ms | Excl: 2.0658 | IPixel: 0.0799 | VGG: 5.0111 |  2/90 saving the latest model at iter 2
+ [=>...............................................................]  Step: 525ms | Tot: 875ms | Excl: 2.0421 | IPixel: 0.0776 | VGG: 4.6274 |  3/90 saving the latest model at iter 3
+ [==>..............................................................]  Step: 429ms | Tot: 1s304ms | Excl: 2.0330 | IPixel: 0.0786 | VGG: 4.2599 |  4/90 saving the latest model at iter 4
+ [==>..............................................................]  Step: 522ms | Tot: 1s827ms | Excl: 2.0216 | IPixel: 0.0791 | VGG: 4.4260 |  5/90 saving the latest model at iter 5
+ [===>.............................................................]  Step: 438ms | Tot: 2s266ms | Excl: 2.0127 | IPixel: 0.0780 | VGG: 4.4363 |  6/90 saving the latest model at iter 6
+ [====>............................................................]  Step: 503ms | Tot: 2s769ms | Excl: 2.0065 | IPixel: 0.0779 | VGG: 4.5146 |  7/90 saving the latest model at iter 7
+ [=====>...........................................................]  Step: 456ms | Tot: 3s226ms | Excl: 2.0409 | IPixel: 0.0792 | VGG: 5.0037 |  8/90 saving the latest model at iter 8
+ [=====>...........................................................]  Step: 476ms | Tot: 3s702ms | Excl: 2.0334 | IPixel: 0.0793 | VGG: 5.0325 |  9/90 saving the latest model at iter 9
+ [======>..........................................................]  Step: 320ms | Tot: 4s22ms | Excl: 2.0330 | IPixel: 0.0788 | VGG: 4.9540 |  10/90 saving the latest model at iter 10
+ [=======>.........................................................]  Step: 435ms | Tot: 4s458ms | Excl: 2.0268 | IPixel: 0.0789 | VGG: 4.9842 |  11/90 saving the latest model at iter 11
+ [=======>.........................................................]  Step: 311ms | Tot: 4s770ms | Excl: 2.0280 | IPixel: 0.0780 | VGG: 4.9500 |  12/90 saving the latest model at iter 12
+ [========>........................................................]  Step: 383ms | Tot: 5s153ms | Excl: 2.0294 | IPixel: 0.0776 | VGG: 4.8470 |  13/90 saving the latest model at iter 13
+ [=========>.......................................................]  Step: 332ms | Tot: 5s486ms | Excl: 2.0354 | IPixel: 0.0771 | VGG: 4.8567 |  14/90 saving the latest model at iter 14
+ [==========>......................................................]  Step: 430ms | Tot: 5s916ms | Excl: 2.0376 | IPixel: 0.0766 | VGG: 4.8480 |  15/90 saving the latest model at iter 15
+ [==========>......................................................]  Step: 310ms | Tot: 6s226ms | Excl: 2.0433 | IPixel: 0.0764 | VGG: 4.8734 |  16/90 saving the latest model at iter 16
+ [===========>.....................................................]  Step: 497ms | Tot: 6s724ms | Excl: 2.0766 | IPixel: 0.0761 | VGG: 4.8854 |  17/90 saving the latest model at iter 17
+ [============>....................................................]  Step: 434ms | Tot: 7s159ms | Excl: 2.0892 | IPixel: 0.0755 | VGG: 4.8889 |  18/90 saving the latest model at iter 18
+ [=============>...................................................]  Step: 816ms | Tot: 7s976ms | Excl: 2.0992 | IPixel: 0.0745 | VGG: 4.9505 |  19/90 saving the latest model at iter 19
+ [=============>...................................................]  Step: 434ms | Tot: 8s410ms | Excl: 2.1065 | IPixel: 0.0739 | VGG: 4.9465 |  20/90 saving the latest model at iter 20
+ [==============>..................................................]  Step: 491ms | Tot: 8s901ms | Excl: 2.1100 | IPixel: 0.0735 | VGG: 4.8768 |  21/90 saving the latest model at iter 21
+ [===============>.................................................]  Step: 445ms | Tot: 9s347ms | Excl: 2.1227 | IPixel: 0.0730 | VGG: 4.8490 |  22/90 saving the latest model at iter 22
+ [===============>.................................................]  Step: 493ms | Tot: 9s841ms | Excl: 2.1295 | IPixel: 0.0725 | VGG: 4.8324 |  23/90 saving the latest model at iter 23
+ [================>................................................]  Step: 434ms | Tot: 10s275ms | Excl: 2.1380 | IPixel: 0.0720 | VGG: 4.8209 |  24/90 saving the latest model at iter 24
+ [=================>...............................................]  Step: 415ms | Tot: 10s690ms | Excl: 2.1455 | IPixel: 0.0699 | VGG: 4.8534 |  25/90 saving the latest model at iter 25
+ [==================>..............................................]  Step: 329ms | Tot: 11s19ms | Excl: 2.1445 | IPixel: 0.0699 | VGG: 4.8415 |  26/90 saving the latest model at iter 26
+ [==================>..............................................]  Step: 442ms | Tot: 11s462ms | Excl: 2.1423 | IPixel: 0.0697 | VGG: 4.9114 |  27/90 saving the latest model at iter 27
+ [===================>.............................................]  Step: 305ms | Tot: 11s767ms | Excl: 2.1444 | IPixel: 0.0695 | VGG: 4.9105 |  28/90 saving the latest model at iter 28
+ [====================>............................................]  Step: 382ms | Tot: 12s150ms | Excl: 2.1464 | IPixel: 0.0692 | VGG: 4.8899 |  29/90 saving the latest model at iter 29
+ [====================>............................................]  Step: 309ms | Tot: 12s459ms | Excl: 2.1463 | IPixel: 0.0690 | VGG: 4.8726 |  30/90 saving the latest model at iter 30
+ [=====================>...........................................]  Step: 434ms | Tot: 12s894ms | Excl: 2.1447 | IPixel: 0.0689 | VGG: 4.8168 |  31/90 saving the latest model at iter 31
+ [======================>..........................................]  Step: 335ms | Tot: 13s229ms | Excl: 2.1414 | IPixel: 0.0689 | VGG: 4.8340 |  32/90 saving the latest model at iter 32
+ [=======================>.........................................]  Step: 414ms | Tot: 13s643ms | Excl: 2.1443 | IPixel: 0.0685 | VGG: 4.8864 |  33/90 saving the latest model at iter 33
+ [=======================>.........................................]  Step: 315ms | Tot: 13s958ms | Excl: 2.1468 | IPixel: 0.0683 | VGG: 4.8369 |  34/90 saving the latest model at iter 34
+ [========================>........................................]  Step: 307ms | Tot: 14s266ms | Excl: 2.1507 | IPixel: 0.0680 | VGG: 4.8153 |  35/90 saving the latest model at iter 35
+ [=========================>.......................................]  Step: 376ms | Tot: 14s643ms | Excl: 2.1529 | IPixel: 0.0675 | VGG: 4.7888 |  36/90 saving the latest model at iter 36
+ [==========================>......................................]  Step: 364ms | Tot: 15s7ms | Excl: 2.1741 | IPixel: 0.0675 | VGG: 4.8304 |  37/90 saving the latest model at iter 37
+ [==========================>......................................]  Step: 343ms | Tot: 15s351ms | Excl: 2.1783 | IPixel: 0.0671 | VGG: 4.8237 |  38/90 saving the latest model at iter 38
+ [===========================>.....................................]  Step: 456ms | Tot: 15s807ms | Excl: 2.1938 | IPixel: 0.0674 | VGG: 4.8068 |  39/90 saving the latest model at iter 39
+ [============================>....................................]  Step: 370ms | Tot: 16s177ms | Excl: 2.1998 | IPixel: 0.0659 | VGG: 4.7775 |  40/90 saving the latest model at iter 40
+ [============================>....................................]  Step: 334ms | Tot: 16s512ms | Excl: 2.2133 | IPixel: 0.0654 | VGG: 4.8166 |  41/90 saving the latest model at iter 41
+ [=============================>...................................]  Step: 413ms | Tot: 16s925ms | Excl: 2.2174 | IPixel: 0.0657 | VGG: 4.8905 |  42/90 saving the latest model at iter 42
+ [==============================>..................................]  Step: 396ms | Tot: 17s321ms | Excl: 2.2282 | IPixel: 0.0653 | VGG: 4.9081 |  43/90 saving the latest model at iter 43
+ [===============================>.................................]  Step: 333ms | Tot: 17s655ms | Excl: 2.2269 | IPixel: 0.0650 | VGG: 4.8936 |  44/90 saving the latest model at iter 44
+ [===============================>.................................]  Step: 379ms | Tot: 18s35ms | Excl: 2.2274 | IPixel: 0.0641 | VGG: 4.9125 |  45/90 saving the latest model at iter 45
+ [================================>................................]  Step: 381ms | Tot: 18s416ms | Excl: 2.2247 | IPixel: 0.0635 | VGG: 4.9094 |  46/90 saving the latest model at iter 46
+ [=================================>...............................]  Step: 309ms | Tot: 18s726ms | Excl: 2.2212 | IPixel: 0.0634 | VGG: 4.8783 |  47/90 saving the latest model at iter 47
+ [=================================>...............................]  Step: 506ms | Tot: 19s232ms | Excl: 2.2175 | IPixel: 0.0632 | VGG: 4.8614 |  48/90 saving the latest model at iter 48
+ [==================================>..............................]  Step: 335ms | Tot: 19s567ms | Excl: 2.2141 | IPixel: 0.0636 | VGG: 4.8765 |  49/90 saving the latest model at iter 49
+ [===================================>.............................]  Step: 366ms | Tot: 19s934ms | Excl: 2.2146 | IPixel: 0.0629 | VGG: 4.8793 |  50/90 saving the latest model at iter 50
+ [====================================>............................]  Step: 410ms | Tot: 20s344ms | Excl: 2.2164 | IPixel: 0.0619 | VGG: 4.8671 |  51/90 saving the latest model at iter 51
+ [====================================>............................]  Step: 316ms | Tot: 20s660ms | Excl: 2.2162 | IPixel: 0.0618 | VGG: 4.8631 |  52/90 saving the latest model at iter 52
+ [=====================================>...........................]  Step: 321ms | Tot: 20s982ms | Excl: 2.2234 | IPixel: 0.0624 | VGG: 4.8691 |  53/90 saving the latest model at iter 53
+ [======================================>..........................]  Step: 684ms | Tot: 21s666ms | Excl: 2.2255 | IPixel: 0.0622 | VGG: 4.8679 |  54/90 saving the latest model at iter 54
+ [=======================================>.........................]  Step: 306ms | Tot: 21s973ms | Excl: 2.2285 | IPixel: 0.0619 | VGG: 4.8554 |  55/90 saving the latest model at iter 55
+ [=======================================>.........................]  Step: 351ms | Tot: 22s324ms | Excl: 2.2291 | IPixel: 0.0615 | VGG: 4.8324 |  56/90 saving the latest model at iter 56
+ [========================================>........................]  Step: 395ms | Tot: 22s719ms | Excl: 2.2273 | IPixel: 0.0613 | VGG: 4.8173 |  57/90 saving the latest model at iter 57
+ [=========================================>.......................]  Step: 352ms | Tot: 23s72ms | Excl: 2.2256 | IPixel: 0.0611 | VGG: 4.8103 |  58/90 saving the latest model at iter 58
+ [=========================================>.......................]  Step: 313ms | Tot: 23s386ms | Excl: 2.2253 | IPixel: 0.0608 | VGG: 4.8012 |  59/90 saving the latest model at iter 59
+ [==========================================>......................]  Step: 515ms | Tot: 23s901ms | Excl: 2.2263 | IPixel: 0.0606 | VGG: 4.7883 |  60/90 saving the latest model at iter 60
+ [===========================================>.....................]  Step: 334ms | Tot: 24s235ms | Excl: 2.2256 | IPixel: 0.0599 | VGG: 4.7779 |  61/90 saving the latest model at iter 61
+ [============================================>....................]  Step: 315ms | Tot: 24s551ms | Excl: 2.2259 | IPixel: 0.0596 | VGG: 4.7640 |  62/90 saving the latest model at iter 62
+ [============================================>....................]  Step: 428ms | Tot: 24s980ms | Excl: 2.2504 | IPixel: 0.0593 | VGG: 4.7550 |  63/90 saving the latest model at iter 63
+ [=============================================>...................]  Step: 340ms | Tot: 25s320ms | Excl: 2.2509 | IPixel: 0.0588 | VGG: 4.7732 |  64/90 saving the latest model at iter 64
+ [==============================================>..................]  Step: 340ms | Tot: 25s661ms | Excl: 2.2533 | IPixel: 0.0582 | VGG: 4.7999 |  65/90 saving the latest model at iter 65
+ [==============================================>..................]  Step: 398ms | Tot: 26s59ms | Excl: 2.2517 | IPixel: 0.0582 | VGG: 4.7994 |  66/90 saving the latest model at iter 66
+ [===============================================>.................]  Step: 377ms | Tot: 26s437ms | Excl: 2.2520 | IPixel: 0.0581 | VGG: 4.8441 |  67/90 saving the latest model at iter 67
+ [================================================>................]  Step: 385ms | Tot: 26s822ms | Excl: 2.2596 | IPixel: 0.0576 | VGG: 4.8325 |  68/90 saving the latest model at iter 68
+ [=================================================>...............]  Step: 864ms | Tot: 27s687ms | Excl: 2.2591 | IPixel: 0.0574 | VGG: 4.8187 |  69/90 saving the latest model at iter 69
+ [=================================================>...............]  Step: 359ms | Tot: 28s47ms | Excl: 2.2575 | IPixel: 0.0568 | VGG: 4.7872 |  70/90 saving the latest model at iter 70
+ [==================================================>..............]  Step: 364ms | Tot: 28s411ms | Excl: 2.2559 | IPixel: 0.0565 | VGG: 4.8307 |  71/90 saving the latest model at iter 71
+ [===================================================>.............]  Step: 448ms | Tot: 28s860ms | Excl: 2.2531 | IPixel: 0.0562 | VGG: 4.8492 |  72/90 saving the latest model at iter 72
+ [====================================================>............]  Step: 312ms | Tot: 29s172ms | Excl: 2.2510 | IPixel: 0.0561 | VGG: 4.8407 |  73/90 saving the latest model at iter 73
+ [====================================================>............]  Step: 316ms | Tot: 29s489ms | Excl: 2.2501 | IPixel: 0.0559 | VGG: 4.8283 |  74/90 saving the latest model at iter 74
+ [=====================================================>...........]  Step: 464ms | Tot: 29s953ms | Excl: 2.2485 | IPixel: 0.0557 | VGG: 4.8741 |  75/90 saving the latest model at iter 75
+ [======================================================>..........]  Step: 402ms | Tot: 30s356ms | Excl: 2.2514 | IPixel: 0.0553 | VGG: 4.8851 |  76/90 saving the latest model at iter 76
+ [======================================================>..........]  Step: 306ms | Tot: 30s662ms | Excl: 2.2507 | IPixel: 0.0552 | VGG: 4.8800 |  77/90 saving the latest model at iter 77
+ [=======================================================>.........]  Step: 473ms | Tot: 31s135ms | Excl: 2.2501 | IPixel: 0.0552 | VGG: 4.8808 |  78/90 saving the latest model at iter 78
+ [========================================================>........]  Step: 325ms | Tot: 31s461ms | Excl: 2.2482 | IPixel: 0.0551 | VGG: 4.8508 |  79/90 saving the latest model at iter 79
+ [=========================================================>.......]  Step: 327ms | Tot: 31s788ms | Excl: 2.2476 | IPixel: 0.0550 | VGG: 4.8445 |  80/90 saving the latest model at iter 80
+ [=========================================================>.......]  Step: 376ms | Tot: 32s164ms | Excl: 2.2465 | IPixel: 0.0548 | VGG: 4.8396 |  81/90 saving the latest model at iter 81
+ [==========================================================>......]  Step: 354ms | Tot: 32s519ms | Excl: 2.2462 | IPixel: 0.0546 | VGG: 4.8514 |  82/90 saving the latest model at iter 82
+ [===========================================================>.....]  Step: 328ms | Tot: 32s848ms | Excl: 2.2467 | IPixel: 0.0544 | VGG: 4.8406 |  83/90 saving the latest model at iter 83
+ [===========================================================>.....]  Step: 581ms | Tot: 33s429ms | Excl: 2.2511 | IPixel: 0.0541 | VGG: 4.8342 |  84/90 saving the latest model at iter 84
+ [============================================================>....]  Step: 336ms | Tot: 33s766ms | Excl: 2.2542 | IPixel: 0.0537 | VGG: 4.8292 |  85/90 saving the latest model at iter 85
+ [=============================================================>...]  Step: 310ms | Tot: 34s76ms | Excl: 2.2548 | IPixel: 0.0535 | VGG: 4.8170 |  86/90 saving the latest model at iter 86
+ [==============================================================>..]  Step: 419ms | Tot: 34s496ms | Excl: 2.2559 | IPixel: 0.0533 | VGG: 4.8490 |  87/90 saving the latest model at iter 87
+ [==============================================================>..]  Step: 321ms | Tot: 34s818ms | Excl: 2.2545 | IPixel: 0.0531 | VGG: 4.8340 |  88/90 saving the latest model at iter 88
+ [===============================================================>.]  Step: 419ms | Tot: 35s238ms | Excl: 2.2548 | IPixel: 0.0528 | VGG: 4.8264 |  89/90 saving the latest model at iter 89
+ [================================================================>]  Step: 445ms | Tot: 35s683ms | Excl: 2.2550 | IPixel: 0.0526 | VGG: 4.8234 |  90/90 
+saving the latest model at iter 90
+saving the latest model at the end of epoch 1, iters 90
+Time Taken: 37 sec
+Reset Dataset...
+
+Epoch: 1
+ [>................................................................]  Step: 513ms | Tot: 0ms | Excl: 2.5341 | IPixel: 0.0289 | VGG: 5.1391 |  1/90 saving the latest model at iter 91
+ [>................................................................]  Step: 533ms | Tot: 533ms | Excl: 2.6212 | IPixel: 0.0313 | VGG: 5.5365 |  2/90 saving the latest model at iter 92
+ [=>...............................................................]  Step: 477ms | Tot: 1s11ms | Excl: 2.5383 | IPixel: 0.0318 | VGG: 5.4497 |  3/90 saving the latest model at iter 93
+ [==>..............................................................]  Step: 319ms | Tot: 1s331ms | Excl: 2.4852 | IPixel: 0.0309 | VGG: 5.2007 |  4/90 saving the latest model at iter 94
+ [==>..............................................................]  Step: 351ms | Tot: 1s683ms | Excl: 2.4864 | IPixel: 0.0307 | VGG: 5.1806 |  5/90 saving the latest model at iter 95
+ [===>.............................................................]  Step: 311ms | Tot: 1s994ms | Excl: 2.5119 | IPixel: 0.0342 | VGG: 5.1014 |  6/90 saving the latest model at iter 96
+ [====>............................................................]  Step: 313ms | Tot: 2s308ms | Excl: 2.5344 | IPixel: 0.0332 | VGG: 5.0637 |  7/90 saving the latest model at iter 97
+ [=====>...........................................................]  Step: 406ms | Tot: 2s715ms | Excl: 2.5417 | IPixel: 0.0349 | VGG: 5.1228 |  8/90 saving the latest model at iter 98
+ [=====>...........................................................]  Step: 296ms | Tot: 3s11ms | Excl: 2.5871 | IPixel: 0.0335 | VGG: 5.2295 |  9/90 saving the latest model at iter 99
+ [======>..........................................................]  Step: 307ms | Tot: 3s319ms | Excl: 2.5803 | IPixel: 0.0331 | VGG: 5.1846 |  10/90 saving the latest model at iter 100
+ [=======>.........................................................]  Step: 375ms | Tot: 3s694ms | Excl: 2.5874 | IPixel: 0.0346 | VGG: 5.2132 |  11/90 saving the latest model at iter 101
+ [=======>.........................................................]  Step: 310ms | Tot: 4s5ms | Excl: 2.6467 | IPixel: 0.0359 | VGG: 5.1386 |  12/90 saving the latest model at iter 102
+ [========>........................................................]  Step: 309ms | Tot: 4s314ms | Excl: 2.6722 | IPixel: 0.0361 | VGG: 5.0934 |  13/90 saving the latest model at iter 103
+ [=========>.......................................................]  Step: 387ms | Tot: 4s702ms | Excl: 2.6556 | IPixel: 0.0366 | VGG: 5.1283 |  14/90 saving the latest model at iter 104
+ [==========>......................................................]  Step: 352ms | Tot: 5s55ms | Excl: 2.6715 | IPixel: 0.0363 | VGG: 5.2319 |  15/90 saving the latest model at iter 105
+ [==========>......................................................]  Step: 313ms | Tot: 5s368ms | Excl: 2.6901 | IPixel: 0.0357 | VGG: 5.1787 |  16/90 saving the latest model at iter 106
+ [===========>.....................................................]  Step: 422ms | Tot: 5s790ms | Excl: 2.6816 | IPixel: 0.0357 | VGG: 5.1877 |  17/90 saving the latest model at iter 107
+ [============>....................................................]  Step: 328ms | Tot: 6s119ms | Excl: 2.6675 | IPixel: 0.0363 | VGG: 5.2037 |  18/90 saving the latest model at iter 108
+ [=============>...................................................]  Step: 341ms | Tot: 6s461ms | Excl: 2.6935 | IPixel: 0.0365 | VGG: 5.1941 |  19/90 saving the latest model at iter 109
+ [=============>...................................................]  Step: 374ms | Tot: 6s836ms | Excl: 2.7042 | IPixel: 0.0363 | VGG: 5.1705 |  20/90 saving the latest model at iter 110
+ [==============>..................................................]  Step: 317ms | Tot: 7s153ms | Excl: 2.7015 | IPixel: 0.0362 | VGG: 5.1608 |  21/90 saving the latest model at iter 111
+ [===============>.................................................]  Step: 322ms | Tot: 7s476ms | Excl: 2.6934 | IPixel: 0.0356 | VGG: 5.0786 |  22/90 saving the latest model at iter 112
+ [===============>.................................................]  Step: 495ms | Tot: 7s971ms | Excl: 2.7147 | IPixel: 0.0356 | VGG: 5.1348 |  23/90 saving the latest model at iter 113
+ [================>................................................]  Step: 365ms | Tot: 8s337ms | Excl: 2.7075 | IPixel: 0.0362 | VGG: 5.2520 |  24/90 saving the latest model at iter 114
+ [=================>...............................................]  Step: 328ms | Tot: 8s666ms | Excl: 2.7224 | IPixel: 0.0366 | VGG: 5.2404 |  25/90 saving the latest model at iter 115
+ [==================>..............................................]  Step: 364ms | Tot: 9s30ms | Excl: 2.7352 | IPixel: 0.0363 | VGG: 5.2111 |  26/90 saving the latest model at iter 116
+ [==================>..............................................]  Step: 350ms | Tot: 9s380ms | Excl: 2.7344 | IPixel: 0.0355 | VGG: 5.2071 |  27/90 saving the latest model at iter 117
+ [===================>.............................................]  Step: 353ms | Tot: 9s734ms | Excl: 2.7616 | IPixel: 0.0353 | VGG: 5.1663 |  28/90 saving the latest model at iter 118
+ [====================>............................................]  Step: 512ms | Tot: 10s246ms | Excl: 2.7772 | IPixel: 0.0358 | VGG: 5.1587 |  29/90 saving the latest model at iter 119
+ [====================>............................................]  Step: 312ms | Tot: 10s558ms | Excl: 2.7901 | IPixel: 0.0354 | VGG: 5.1334 |  30/90 saving the latest model at iter 120
+ [=====================>...........................................]  Step: 313ms | Tot: 10s872ms | Excl: 2.7971 | IPixel: 0.0359 | VGG: 5.1323 |  31/90 saving the latest model at iter 121
+ [======================>..........................................]  Step: 398ms | Tot: 11s270ms | Excl: 2.8135 | IPixel: 0.0364 | VGG: 5.0953 |  32/90 saving the latest model at iter 122
+ [=======================>.........................................]  Step: 310ms | Tot: 11s581ms | Excl: 2.8163 | IPixel: 0.0366 | VGG: 5.0899 |  33/90 saving the latest model at iter 123
+ [=======================>.........................................]  Step: 424ms | Tot: 12s6ms | Excl: 2.8375 | IPixel: 0.0367 | VGG: 5.0507 |  34/90 saving the latest model at iter 124
+ [========================>........................................]  Step: 510ms | Tot: 12s516ms | Excl: 2.8553 | IPixel: 0.0364 | VGG: 5.0395 |  35/90 saving the latest model at iter 125
+ [=========================>.......................................]  Step: 317ms | Tot: 12s834ms | Excl: 2.8616 | IPixel: 0.0363 | VGG: 5.0362 |  36/90 saving the latest model at iter 126
+ [==========================>......................................]  Step: 309ms | Tot: 13s143ms | Excl: 2.8728 | IPixel: 0.0362 | VGG: 5.0181 |  37/90 saving the latest model at iter 127
+ [==========================>......................................]  Step: 387ms | Tot: 13s531ms | Excl: 2.8703 | IPixel: 0.0358 | VGG: 4.9887 |  38/90 saving the latest model at iter 128
+ [===========================>.....................................]  Step: 358ms | Tot: 13s889ms | Excl: 2.8751 | IPixel: 0.0353 | VGG: 4.9503 |  39/90 saving the latest model at iter 129
+ [============================>....................................]  Step: 548ms | Tot: 14s437ms | Excl: 2.8893 | IPixel: 0.0350 | VGG: 4.9633 |  40/90 saving the latest model at iter 130
+ [============================>....................................]  Step: 740ms | Tot: 15s178ms | Excl: 2.9090 | IPixel: 0.0352 | VGG: 5.0117 |  41/90 saving the latest model at iter 131
+ [=============================>...................................]  Step: 313ms | Tot: 15s491ms | Excl: 2.9102 | IPixel: 0.0353 | VGG: 5.0081 |  42/90 saving the latest model at iter 132
+ [==============================>..................................]  Step: 314ms | Tot: 15s805ms | Excl: 2.9116 | IPixel: 0.0354 | VGG: 5.0267 |  43/90 saving the latest model at iter 133
+ [===============================>.................................]  Step: 375ms | Tot: 16s181ms | Excl: 2.9163 | IPixel: 0.0353 | VGG: 5.0152 |  44/90 saving the latest model at iter 134
+ [===============================>.................................]  Step: 309ms | Tot: 16s491ms | Excl: 2.9176 | IPixel: 0.0352 | VGG: 5.0008 |  45/90 saving the latest model at iter 135
+ [================================>................................]  Step: 369ms | Tot: 16s860ms | Excl: 2.9218 | IPixel: 0.0354 | VGG: 5.0223 |  46/90 saving the latest model at iter 136
+ [=================================>...............................]  Step: 406ms | Tot: 17s266ms | Excl: 2.9247 | IPixel: 0.0353 | VGG: 5.0590 |  47/90 saving the latest model at iter 137
+ [=================================>...............................]  Step: 326ms | Tot: 17s593ms | Excl: 2.9407 | IPixel: 0.0352 | VGG: 5.0330 |  48/90 saving the latest model at iter 138
+ [==================================>..............................]  Step: 387ms | Tot: 17s981ms | Excl: 2.9556 | IPixel: 0.0351 | VGG: 5.0302 |  49/90 saving the latest model at iter 139
+ [===================================>.............................]  Step: 529ms | Tot: 18s510ms | Excl: 2.9646 | IPixel: 0.0351 | VGG: 5.0262 |  50/90 saving the latest model at iter 140
+ [====================================>............................]  Step: 310ms | Tot: 18s820ms | Excl: 2.9687 | IPixel: 0.0352 | VGG: 5.0231 |  51/90 saving the latest model at iter 141
+ [====================================>............................]  Step: 338ms | Tot: 19s158ms | Excl: 2.9765 | IPixel: 0.0349 | VGG: 5.0292 |  52/90 saving the latest model at iter 142
+ [=====================================>...........................]  Step: 432ms | Tot: 19s591ms | Excl: 2.9841 | IPixel: 0.0350 | VGG: 5.0259 |  53/90 saving the latest model at iter 143
+ [======================================>..........................]  Step: 313ms | Tot: 19s904ms | Excl: 2.9888 | IPixel: 0.0349 | VGG: 5.0097 |  54/90 saving the latest model at iter 144
+ [=======================================>.........................]  Step: 306ms | Tot: 20s211ms | Excl: 2.9890 | IPixel: 0.0348 | VGG: 4.9969 |  55/90 saving the latest model at iter 145
+ [=======================================>.........................]  Step: 417ms | Tot: 20s629ms | Excl: 2.9906 | IPixel: 0.0349 | VGG: 4.9980 |  56/90 saving the latest model at iter 146
+ [========================================>........................]  Step: 309ms | Tot: 20s938ms | Excl: 2.9958 | IPixel: 0.0350 | VGG: 4.9977 |  57/90 saving the latest model at iter 147
+ [=========================================>.......................]  Step: 310ms | Tot: 21s249ms | Excl: 3.0041 | IPixel: 0.0349 | VGG: 4.9866 |  58/90 saving the latest model at iter 148
+ [=========================================>.......................]  Step: 373ms | Tot: 21s623ms | Excl: 3.0093 | IPixel: 0.0348 | VGG: 4.9744 |  59/90 saving the latest model at iter 149
+ [==========================================>......................]  Step: 324ms | Tot: 21s947ms | Excl: 3.0126 | IPixel: 0.0348 | VGG: 4.9625 |  60/90 saving the latest model at iter 150
+ [===========================================>.....................]  Step: 303ms | Tot: 22s251ms | Excl: 3.0207 | IPixel: 0.0348 | VGG: 4.9517 |  61/90 saving the latest model at iter 151
+ [============================================>....................]  Step: 487ms | Tot: 22s739ms | Excl: 3.0592 | IPixel: 0.0348 | VGG: 4.9501 |  62/90 saving the latest model at iter 152
+ [============================================>....................]  Step: 322ms | Tot: 23s61ms | Excl: 3.0652 | IPixel: 0.0349 | VGG: 4.9476 |  63/90 saving the latest model at iter 153
+ [=============================================>...................]  Step: 426ms | Tot: 23s488ms | Excl: 3.0676 | IPixel: 0.0348 | VGG: 4.9396 |  64/90 saving the latest model at iter 154
+ [==============================================>..................]  Step: 362ms | Tot: 23s850ms | Excl: 3.0707 | IPixel: 0.0348 | VGG: 4.9275 |  65/90 saving the latest model at iter 155
+ [==============================================>..................]  Step: 329ms | Tot: 24s180ms | Excl: 3.0849 | IPixel: 0.0348 | VGG: 4.9440 |  66/90 saving the latest model at iter 156
+ [===============================================>.................]  Step: 310ms | Tot: 24s490ms | Excl: 3.0873 | IPixel: 0.0347 | VGG: 4.9323 |  67/90 saving the latest model at iter 157
+ [================================================>................]  Step: 357ms | Tot: 24s847ms | Excl: 3.0970 | IPixel: 0.0346 | VGG: 4.9311 |  68/90 saving the latest model at iter 158
+ [=================================================>...............]  Step: 312ms | Tot: 25s160ms | Excl: 3.1042 | IPixel: 0.0349 | VGG: 4.9761 |  69/90 saving the latest model at iter 159
+ [=================================================>...............]  Step: 319ms | Tot: 25s479ms | Excl: 3.1020 | IPixel: 0.0347 | VGG: 4.9469 |  70/90 saving the latest model at iter 160
+ [==================================================>..............]  Step: 595ms | Tot: 26s74ms | Excl: 3.1255 | IPixel: 0.0348 | VGG: 4.9356 |  71/90 saving the latest model at iter 161
+ [===================================================>.............]  Step: 309ms | Tot: 26s383ms | Excl: 3.1413 | IPixel: 0.0347 | VGG: 4.9401 |  72/90 saving the latest model at iter 162
+ [====================================================>............]  Step: 330ms | Tot: 26s713ms | Excl: 3.1353 | IPixel: 0.0345 | VGG: 4.9051 |  73/90 saving the latest model at iter 163
+ [====================================================>............]  Step: 350ms | Tot: 27s63ms | Excl: 3.1383 | IPixel: 0.0346 | VGG: 4.8991 |  74/90 saving the latest model at iter 164
+ [=====================================================>...........]  Step: 304ms | Tot: 27s368ms | Excl: 3.1385 | IPixel: 0.0345 | VGG: 4.8927 |  75/90 saving the latest model at iter 165
+ [======================================================>..........]  Step: 296ms | Tot: 27s664ms | Excl: 3.1433 | IPixel: 0.0345 | VGG: 4.8837 |  76/90 saving the latest model at iter 166
+ [======================================================>..........]  Step: 351ms | Tot: 28s16ms | Excl: 3.1458 | IPixel: 0.0344 | VGG: 4.8649 |  77/90 saving the latest model at iter 167
+ [=======================================================>.........]  Step: 307ms | Tot: 28s323ms | Excl: 3.1487 | IPixel: 0.0344 | VGG: 4.8592 |  78/90 saving the latest model at iter 168
+ [========================================================>........]  Step: 293ms | Tot: 28s617ms | Excl: 3.1489 | IPixel: 0.0344 | VGG: 4.8674 |  79/90 saving the latest model at iter 169
+ [=========================================================>.......]  Step: 426ms | Tot: 29s43ms | Excl: 3.1520 | IPixel: 0.0344 | VGG: 4.8587 |  80/90 saving the latest model at iter 170
+ [=========================================================>.......]  Step: 311ms | Tot: 29s354ms | Excl: 3.1546 | IPixel: 0.0344 | VGG: 4.8515 |  81/90 saving the latest model at iter 171
+ [==========================================================>......]  Step: 306ms | Tot: 29s661ms | Excl: 3.1609 | IPixel: 0.0344 | VGG: 4.8369 |  82/90 saving the latest model at iter 172
+ [===========================================================>.....]  Step: 420ms | Tot: 30s82ms | Excl: 3.1588 | IPixel: 0.0343 | VGG: 4.8214 |  83/90 saving the latest model at iter 173
+ [===========================================================>.....]  Step: 308ms | Tot: 30s391ms | Excl: 3.1626 | IPixel: 0.0342 | VGG: 4.8115 |  84/90 saving the latest model at iter 174
+ [============================================================>....]  Step: 356ms | Tot: 30s748ms | Excl: 3.1637 | IPixel: 0.0341 | VGG: 4.8030 |  85/90 saving the latest model at iter 175
+ [=============================================================>...]  Step: 312ms | Tot: 31s60ms | Excl: 3.1634 | IPixel: 0.0341 | VGG: 4.7914 |  86/90 saving the latest model at iter 176
+ [==============================================================>..]  Step: 307ms | Tot: 31s368ms | Excl: 3.1751 | IPixel: 0.0340 | VGG: 4.7791 |  87/90 saving the latest model at iter 177
+ [==============================================================>..]  Step: 835ms | Tot: 32s203ms | Excl: 3.1808 | IPixel: 0.0340 | VGG: 4.7725 |  88/90 saving the latest model at iter 178
+ [===============================================================>.]  Step: 315ms | Tot: 32s519ms | Excl: 3.1875 | IPixel: 0.0339 | VGG: 4.7613 |  89/90 saving the latest model at iter 179
+ [================================================================>]  Step: 381ms | Tot: 32s901ms | Excl: 3.1898 | IPixel: 0.0339 | VGG: 4.7518 |  90/90 
+saving the latest model at iter 180
+saving the latest model at the end of epoch 2, iters 180
+Time Taken: 33 sec
+Reset Dataset...
+
+Epoch: 2
+ [>................................................................]  Step: 547ms | Tot: 0ms | Excl: 2.4743 | IPixel: 0.0338 | VGG: 4.1498 |  1/90 saving the latest model at iter 181
+ [>................................................................]  Step: 393ms | Tot: 393ms | Excl: 2.5198 | IPixel: 0.0282 | VGG: 4.0406 |  2/90 saving the latest model at iter 182
+ [=>...............................................................]  Step: 309ms | Tot: 702ms | Excl: 2.5278 | IPixel: 0.0294 | VGG: 4.1967 |  3/90 saving the latest model at iter 183
+ [==>..............................................................]  Step: 361ms | Tot: 1s64ms | Excl: 2.4966 | IPixel: 0.0276 | VGG: 3.9798 |  4/90 saving the latest model at iter 184
+ [==>..............................................................]  Step: 302ms | Tot: 1s367ms | Excl: 2.5420 | IPixel: 0.0255 | VGG: 3.7060 |  5/90 saving the latest model at iter 185
+ [===>.............................................................]  Step: 321ms | Tot: 1s689ms | Excl: 2.6164 | IPixel: 0.0256 | VGG: 3.9269 |  6/90 saving the latest model at iter 186
+ [====>............................................................]  Step: 424ms | Tot: 2s113ms | Excl: 2.8457 | IPixel: 0.0259 | VGG: 4.1882 |  7/90 saving the latest model at iter 187
+ [=====>...........................................................]  Step: 310ms | Tot: 2s423ms | Excl: 2.7752 | IPixel: 0.0254 | VGG: 3.9227 |  8/90 saving the latest model at iter 188
+ [=====>...........................................................]  Step: 415ms | Tot: 2s839ms | Excl: 2.7645 | IPixel: 0.0252 | VGG: 3.9328 |  9/90 saving the latest model at iter 189
+ [======>..........................................................]  Step: 320ms | Tot: 3s160ms | Excl: 2.7367 | IPixel: 0.0252 | VGG: 3.9367 |  10/90 saving the latest model at iter 190
+ [=======>.........................................................]  Step: 323ms | Tot: 3s483ms | Excl: 2.7088 | IPixel: 0.0249 | VGG: 3.8905 |  11/90 saving the latest model at iter 191
+ [=======>.........................................................]  Step: 395ms | Tot: 3s879ms | Excl: 2.7698 | IPixel: 0.0262 | VGG: 4.0812 |  12/90 saving the latest model at iter 192
+ [========>........................................................]  Step: 314ms | Tot: 4s194ms | Excl: 2.7530 | IPixel: 0.0261 | VGG: 4.0261 |  13/90 saving the latest model at iter 193
+ [=========>.......................................................]  Step: 348ms | Tot: 4s542ms | Excl: 2.7282 | IPixel: 0.0261 | VGG: 3.9403 |  14/90 saving the latest model at iter 194
+ [==========>......................................................]  Step: 549ms | Tot: 5s91ms | Excl: 2.8016 | IPixel: 0.0262 | VGG: 4.0929 |  15/90 saving the latest model at iter 195
+ [==========>......................................................]  Step: 339ms | Tot: 5s430ms | Excl: 2.7748 | IPixel: 0.0261 | VGG: 3.9911 |  16/90 saving the latest model at iter 196
+ [===========>.....................................................]  Step: 410ms | Tot: 5s841ms | Excl: 2.8639 | IPixel: 0.0270 | VGG: 4.0371 |  17/90 saving the latest model at iter 197
+ [============>....................................................]  Step: 332ms | Tot: 6s173ms | Excl: 2.9221 | IPixel: 0.0265 | VGG: 4.0316 |  18/90 saving the latest model at iter 198
+ [=============>...................................................]  Step: 390ms | Tot: 6s564ms | Excl: 2.9284 | IPixel: 0.0267 | VGG: 4.1753 |  19/90 saving the latest model at iter 199
+ [=============>...................................................]  Step: 316ms | Tot: 6s880ms | Excl: 2.9681 | IPixel: 0.0262 | VGG: 4.1452 |  20/90 saving the latest model at iter 200
+ [==============>..................................................]  Step: 425ms | Tot: 7s305ms | Excl: 2.9428 | IPixel: 0.0261 | VGG: 4.0926 |  21/90 saving the latest model at iter 201
+ [===============>.................................................]  Step: 473ms | Tot: 7s779ms | Excl: 2.9303 | IPixel: 0.0263 | VGG: 4.0710 |  22/90 saving the latest model at iter 202
+ [===============>.................................................]  Step: 306ms | Tot: 8s86ms | Excl: 2.9170 | IPixel: 0.0262 | VGG: 4.0219 |  23/90 saving the latest model at iter 203
+ [================>................................................]  Step: 392ms | Tot: 8s478ms | Excl: 2.9019 | IPixel: 0.0264 | VGG: 3.9972 |  24/90 saving the latest model at iter 204
+ [=================>...............................................]  Step: 301ms | Tot: 8s779ms | Excl: 2.9187 | IPixel: 0.0267 | VGG: 4.1304 |  25/90 saving the latest model at iter 205
+ [==================>..............................................]  Step: 316ms | Tot: 9s95ms | Excl: 2.9212 | IPixel: 0.0271 | VGG: 4.1221 |  26/90 saving the latest model at iter 206
+ [==================>..............................................]  Step: 623ms | Tot: 9s719ms | Excl: 3.0024 | IPixel: 0.0267 | VGG: 4.0764 |  27/90 saving the latest model at iter 207
+ [===================>.............................................]  Step: 434ms | Tot: 10s153ms | Excl: 2.9904 | IPixel: 0.0265 | VGG: 4.0578 |  28/90 saving the latest model at iter 208
+ [====================>............................................]  Step: 486ms | Tot: 10s640ms | Excl: 2.9831 | IPixel: 0.0265 | VGG: 4.0300 |  29/90 saving the latest model at iter 209
+ [====================>............................................]  Step: 310ms | Tot: 10s950ms | Excl: 2.9739 | IPixel: 0.0265 | VGG: 4.0140 |  30/90 saving the latest model at iter 210
+ [=====================>...........................................]  Step: 326ms | Tot: 11s277ms | Excl: 2.9619 | IPixel: 0.0266 | VGG: 3.9897 |  31/90 saving the latest model at iter 211
+ [======================>..........................................]  Step: 402ms | Tot: 11s679ms | Excl: 2.9716 | IPixel: 0.0264 | VGG: 3.9787 |  32/90 saving the latest model at iter 212
+ [=======================>.........................................]  Step: 312ms | Tot: 11s992ms | Excl: 2.9494 | IPixel: 0.0264 | VGG: 3.9216 |  33/90 saving the latest model at iter 213
+ [=======================>.........................................]  Step: 363ms | Tot: 12s356ms | Excl: 2.9678 | IPixel: 0.0262 | VGG: 3.9514 |  34/90 saving the latest model at iter 214
+ [========================>........................................]  Step: 277ms | Tot: 12s633ms | Excl: 2.9700 | IPixel: 0.0269 | VGG: 4.0370 |  35/90 saving the latest model at iter 215
+ [=========================>.......................................]  Step: 305ms | Tot: 12s939ms | Excl: 2.9638 | IPixel: 0.0269 | VGG: 4.0120 |  36/90 saving the latest model at iter 216
+ [==========================>......................................]  Step: 426ms | Tot: 13s365ms | Excl: 2.9541 | IPixel: 0.0271 | VGG: 4.0020 |  37/90 saving the latest model at iter 217
+ [==========================>......................................]  Step: 324ms | Tot: 13s690ms | Excl: 2.9433 | IPixel: 0.0272 | VGG: 3.9819 |  38/90 saving the latest model at iter 218
+ [===========================>.....................................]  Step: 675ms | Tot: 14s365ms | Excl: 2.9343 | IPixel: 0.0272 | VGG: 3.9599 |  39/90 saving the latest model at iter 219
+ [============================>....................................]  Step: 305ms | Tot: 14s670ms | Excl: 2.9250 | IPixel: 0.0274 | VGG: 3.9525 |  40/90 saving the latest model at iter 220
+ [============================>....................................]  Step: 311ms | Tot: 14s981ms | Excl: 2.9177 | IPixel: 0.0272 | VGG: 3.9296 |  41/90 saving the latest model at iter 221
+ [=============================>...................................]  Step: 387ms | Tot: 15s369ms | Excl: 2.9677 | IPixel: 0.0273 | VGG: 3.9426 |  42/90 saving the latest model at iter 222
+ [==============================>..................................]  Step: 309ms | Tot: 15s678ms | Excl: 2.9627 | IPixel: 0.0273 | VGG: 3.9254 |  43/90 saving the latest model at iter 223
+ [===============================>.................................]  Step: 487ms | Tot: 16s166ms | Excl: 2.9532 | IPixel: 0.0271 | VGG: 3.9001 |  44/90 saving the latest model at iter 224
+ [===============================>.................................]  Step: 316ms | Tot: 16s483ms | Excl: 2.9496 | IPixel: 0.0270 | VGG: 3.8841 |  45/90 saving the latest model at iter 225
+ [================================>................................]  Step: 335ms | Tot: 16s819ms | Excl: 2.9551 | IPixel: 0.0271 | VGG: 3.9150 |  46/90 saving the latest model at iter 226
+ [=================================>...............................]  Step: 394ms | Tot: 17s213ms | Excl: 2.9434 | IPixel: 0.0268 | VGG: 3.8822 |  47/90 saving the latest model at iter 227
+ [=================================>...............................]  Step: 349ms | Tot: 17s563ms | Excl: 2.9588 | IPixel: 0.0266 | VGG: 3.8722 |  48/90 saving the latest model at iter 228
+ [==================================>..............................]  Step: 360ms | Tot: 17s923ms | Excl: 2.9497 | IPixel: 0.0264 | VGG: 3.8496 |  49/90 saving the latest model at iter 229
+ [===================================>.............................]  Step: 322ms | Tot: 18s245ms | Excl: 2.9440 | IPixel: 0.0263 | VGG: 3.8321 |  50/90 saving the latest model at iter 230
+ [====================================>............................]  Step: 444ms | Tot: 18s689ms | Excl: 2.9395 | IPixel: 0.0263 | VGG: 3.8222 |  51/90 saving the latest model at iter 231
+ [====================================>............................]  Step: 505ms | Tot: 19s195ms | Excl: 2.9333 | IPixel: 0.0263 | VGG: 3.8097 |  52/90 saving the latest model at iter 232
+ [=====================================>...........................]  Step: 427ms | Tot: 19s622ms | Excl: 2.9281 | IPixel: 0.0262 | VGG: 3.7913 |  53/90 saving the latest model at iter 233
+ [======================================>..........................]  Step: 377ms | Tot: 20s | Excl: 2.9242 | IPixel: 0.0261 | VGG: 3.7804 |  54/90 saving the latest model at iter 234
+ [=======================================>.........................]  Step: 309ms | Tot: 20s309ms | Excl: 2.9180 | IPixel: 0.0259 | VGG: 3.7620 |  55/90 saving the latest model at iter 235
+ [=======================================>.........................]  Step: 315ms | Tot: 20s624ms | Excl: 2.9287 | IPixel: 0.0260 | VGG: 3.7706 |  56/90 saving the latest model at iter 236
+ [========================================>........................]  Step: 371ms | Tot: 20s995ms | Excl: 2.9229 | IPixel: 0.0260 | VGG: 3.7548 |  57/90 saving the latest model at iter 237
+ [=========================================>.......................]  Step: 307ms | Tot: 21s302ms | Excl: 2.9396 | IPixel: 0.0259 | VGG: 3.7778 |  58/90 saving the latest model at iter 238
+ [=========================================>.......................]  Step: 375ms | Tot: 21s678ms | Excl: 2.9312 | IPixel: 0.0258 | VGG: 3.7647 |  59/90 saving the latest model at iter 239
+ [==========================================>......................]  Step: 352ms | Tot: 22s30ms | Excl: 2.9355 | IPixel: 0.0259 | VGG: 3.8024 |  60/90 saving the latest model at iter 240
+ [===========================================>.....................]  Step: 305ms | Tot: 22s335ms | Excl: 2.9296 | IPixel: 0.0259 | VGG: 3.7829 |  61/90 saving the latest model at iter 241
+ [============================================>....................]  Step: 432ms | Tot: 22s768ms | Excl: 2.9230 | IPixel: 0.0258 | VGG: 3.7677 |  62/90 saving the latest model at iter 242
+ [============================================>....................]  Step: 318ms | Tot: 23s87ms | Excl: 2.9177 | IPixel: 0.0258 | VGG: 3.7507 |  63/90 saving the latest model at iter 243
+ [=============================================>...................]  Step: 442ms | Tot: 23s529ms | Excl: 2.9219 | IPixel: 0.0260 | VGG: 3.7729 |  64/90 saving the latest model at iter 244
+ [==============================================>..................]  Step: 310ms | Tot: 23s840ms | Excl: 2.9169 | IPixel: 0.0260 | VGG: 3.7614 |  65/90 saving the latest model at iter 245
+ [==============================================>..................]  Step: 358ms | Tot: 24s198ms | Excl: 2.9415 | IPixel: 0.0258 | VGG: 3.7698 |  66/90 saving the latest model at iter 246
+ [===============================================>.................]  Step: 378ms | Tot: 24s577ms | Excl: 2.9360 | IPixel: 0.0258 | VGG: 3.7621 |  67/90 saving the latest model at iter 247
+ [================================================>................]  Step: 446ms | Tot: 25s23ms | Excl: 2.9309 | IPixel: 0.0258 | VGG: 3.7480 |  68/90 saving the latest model at iter 248
+ [=================================================>...............]  Step: 584ms | Tot: 25s608ms | Excl: 2.9395 | IPixel: 0.0257 | VGG: 3.7525 |  69/90 saving the latest model at iter 249
+ [=================================================>...............]  Step: 401ms | Tot: 26s9ms | Excl: 2.9584 | IPixel: 0.0259 | VGG: 3.7661 |  70/90 saving the latest model at iter 250
+ [==================================================>..............]  Step: 319ms | Tot: 26s328ms | Excl: 2.9536 | IPixel: 0.0258 | VGG: 3.7520 |  71/90 saving the latest model at iter 251
+ [===================================================>.............]  Step: 370ms | Tot: 26s699ms | Excl: 2.9496 | IPixel: 0.0258 | VGG: 3.7406 |  72/90 saving the latest model at iter 252
+ [====================================================>............]  Step: 373ms | Tot: 27s72ms | Excl: 2.9412 | IPixel: 0.0258 | VGG: 3.7554 |  73/90 saving the latest model at iter 253
+ [====================================================>............]  Step: 377ms | Tot: 27s450ms | Excl: 2.9467 | IPixel: 0.0258 | VGG: 3.7653 |  74/90 saving the latest model at iter 254
+ [=====================================================>...........]  Step: 323ms | Tot: 27s774ms | Excl: 2.9423 | IPixel: 0.0258 | VGG: 3.7560 |  75/90 saving the latest model at iter 255
+ [======================================================>..........]  Step: 340ms | Tot: 28s114ms | Excl: 2.9431 | IPixel: 0.0259 | VGG: 3.7981 |  76/90 saving the latest model at iter 256
+ [======================================================>..........]  Step: 399ms | Tot: 28s513ms | Excl: 2.9419 | IPixel: 0.0262 | VGG: 3.8138 |  77/90 saving the latest model at iter 257
+ [=======================================================>.........]  Step: 309ms | Tot: 28s822ms | Excl: 2.9382 | IPixel: 0.0262 | VGG: 3.8023 |  78/90 saving the latest model at iter 258
+ [========================================================>........]  Step: 456ms | Tot: 29s279ms | Excl: 2.9360 | IPixel: 0.0261 | VGG: 3.7892 |  79/90 saving the latest model at iter 259
+ [=========================================================>.......]  Step: 320ms | Tot: 29s600ms | Excl: 2.9326 | IPixel: 0.0260 | VGG: 3.7748 |  80/90 saving the latest model at iter 260
+ [=========================================================>.......]  Step: 290ms | Tot: 29s890ms | Excl: 2.9253 | IPixel: 0.0259 | VGG: 3.7508 |  81/90 saving the latest model at iter 261
+ [==========================================================>......]  Step: 480ms | Tot: 30s371ms | Excl: 2.9217 | IPixel: 0.0259 | VGG: 3.7430 |  82/90 saving the latest model at iter 262
+ [===========================================================>.....]  Step: 303ms | Tot: 30s675ms | Excl: 2.9280 | IPixel: 0.0259 | VGG: 3.7764 |  83/90 saving the latest model at iter 263
+ [===========================================================>.....]  Step: 545ms | Tot: 31s220ms | Excl: 2.9499 | IPixel: 0.0258 | VGG: 3.8037 |  84/90 saving the latest model at iter 264
+ [============================================================>....]  Step: 312ms | Tot: 31s532ms | Excl: 2.9456 | IPixel: 0.0259 | VGG: 3.7951 |  85/90 saving the latest model at iter 265
+ [=============================================================>...]  Step: 329ms | Tot: 31s862ms | Excl: 2.9520 | IPixel: 0.0259 | VGG: 3.8103 |  86/90 saving the latest model at iter 266
+ [==============================================================>..]  Step: 344ms | Tot: 32s207ms | Excl: 2.9693 | IPixel: 0.0260 | VGG: 3.8323 |  87/90 saving the latest model at iter 267
+ [==============================================================>..]  Step: 314ms | Tot: 32s521ms | Excl: 2.9628 | IPixel: 0.0259 | VGG: 3.8148 |  88/90 saving the latest model at iter 268
+ [===============================================================>.]  Step: 392ms | Tot: 32s914ms | Excl: 2.9562 | IPixel: 0.0258 | VGG: 3.7971 |  89/90 saving the latest model at iter 269
+ [================================================================>]  Step: 310ms | Tot: 33s224ms | Excl: 2.9514 | IPixel: 0.0258 | VGG: 3.7852 |  90/90 
+saving the latest model at iter 270
+saving the latest model at the end of epoch 3, iters 270
+Time Taken: 33 sec
+Reset Dataset...
+
+Epoch: 3
+ [>................................................................]  Step: 553ms | Tot: 0ms | Excl: 2.6132 | IPixel: 0.0301 | VGG: 3.3050 |  1/90 saving the latest model at iter 271
+ [>................................................................]  Step: 315ms | Tot: 315ms | Excl: 2.6470 | IPixel: 0.0252 | VGG: 3.0257 |  2/90 saving the latest model at iter 272
+ [=>...............................................................]  Step: 412ms | Tot: 728ms | Excl: 2.5103 | IPixel: 0.0216 | VGG: 2.5562 |  3/90 saving the latest model at iter 273
+ [==>..............................................................]  Step: 304ms | Tot: 1s32ms | Excl: 2.4900 | IPixel: 0.0213 | VGG: 2.5418 |  4/90 saving the latest model at iter 274
+ [==>..............................................................]  Step: 308ms | Tot: 1s341ms | Excl: 2.5135 | IPixel: 0.0228 | VGG: 2.7176 |  5/90 saving the latest model at iter 275
+ [===>.............................................................]  Step: 370ms | Tot: 1s712ms | Excl: 2.5252 | IPixel: 0.0228 | VGG: 2.7410 |  6/90 saving the latest model at iter 276
+ [====>............................................................]  Step: 307ms | Tot: 2s19ms | Excl: 2.5423 | IPixel: 0.0220 | VGG: 2.7445 |  7/90 saving the latest model at iter 277
+ [=====>...........................................................]  Step: 356ms | Tot: 2s376ms | Excl: 2.5491 | IPixel: 0.0221 | VGG: 2.7665 |  8/90 saving the latest model at iter 278
+ [=====>...........................................................]  Step: 307ms | Tot: 2s684ms | Excl: 2.5577 | IPixel: 0.0224 | VGG: 2.7701 |  9/90 saving the latest model at iter 279
+ [======>..........................................................]  Step: 320ms | Tot: 3s4ms | Excl: 2.5711 | IPixel: 0.0217 | VGG: 2.7562 |  10/90 saving the latest model at iter 280
+ [=======>.........................................................]  Step: 361ms | Tot: 3s366ms | Excl: 2.5998 | IPixel: 0.0214 | VGG: 2.8423 |  11/90 saving the latest model at iter 281
+ [=======>.........................................................]  Step: 369ms | Tot: 3s735ms | Excl: 2.7563 | IPixel: 0.0212 | VGG: 3.0349 |  12/90 saving the latest model at iter 282
+ [========>........................................................]  Step: 371ms | Tot: 4s106ms | Excl: 2.7331 | IPixel: 0.0213 | VGG: 2.9990 |  13/90 saving the latest model at iter 283
+ [=========>.......................................................]  Step: 317ms | Tot: 4s424ms | Excl: 2.7279 | IPixel: 0.0210 | VGG: 2.9663 |  14/90 saving the latest model at iter 284
+ [==========>......................................................]  Step: 313ms | Tot: 4s737ms | Excl: 2.8218 | IPixel: 0.0217 | VGG: 3.0093 |  15/90 saving the latest model at iter 285
+ [==========>......................................................]  Step: 607ms | Tot: 5s345ms | Excl: 2.8134 | IPixel: 0.0215 | VGG: 2.9783 |  16/90 saving the latest model at iter 286
+ [===========>.....................................................]  Step: 286ms | Tot: 5s631ms | Excl: 2.8397 | IPixel: 0.0217 | VGG: 3.0396 |  17/90 saving the latest model at iter 287
+ [============>....................................................]  Step: 361ms | Tot: 5s993ms | Excl: 2.8201 | IPixel: 0.0214 | VGG: 3.0033 |  18/90 saving the latest model at iter 288
+ [=============>...................................................]  Step: 373ms | Tot: 6s366ms | Excl: 2.8115 | IPixel: 0.0217 | VGG: 3.0067 |  19/90 saving the latest model at iter 289
+ [=============>...................................................]  Step: 310ms | Tot: 6s677ms | Excl: 2.8013 | IPixel: 0.0220 | VGG: 3.0206 |  20/90 saving the latest model at iter 290
+ [==============>..................................................]  Step: 383ms | Tot: 7s61ms | Excl: 2.9252 | IPixel: 0.0222 | VGG: 3.1268 |  21/90 saving the latest model at iter 291
+ [===============>.................................................]  Step: 301ms | Tot: 7s362ms | Excl: 2.9103 | IPixel: 0.0228 | VGG: 3.2393 |  22/90 saving the latest model at iter 292
+ [===============>.................................................]  Step: 363ms | Tot: 7s725ms | Excl: 2.8988 | IPixel: 0.0225 | VGG: 3.2164 |  23/90 saving the latest model at iter 293
+ [================>................................................]  Step: 310ms | Tot: 8s36ms | Excl: 2.8860 | IPixel: 0.0228 | VGG: 3.2169 |  24/90 saving the latest model at iter 294
+ [=================>...............................................]  Step: 313ms | Tot: 8s350ms | Excl: 2.8764 | IPixel: 0.0227 | VGG: 3.1852 |  25/90 saving the latest model at iter 295
+ [==================>..............................................]  Step: 386ms | Tot: 8s736ms | Excl: 2.8778 | IPixel: 0.0236 | VGG: 3.2521 |  26/90 saving the latest model at iter 296
+ [==================>..............................................]  Step: 314ms | Tot: 9s51ms | Excl: 2.8688 | IPixel: 0.0235 | VGG: 3.2198 |  27/90 saving the latest model at iter 297
+ [===================>.............................................]  Step: 357ms | Tot: 9s409ms | Excl: 2.8604 | IPixel: 0.0234 | VGG: 3.1926 |  28/90 saving the latest model at iter 298
+ [====================>............................................]  Step: 314ms | Tot: 9s723ms | Excl: 2.8627 | IPixel: 0.0243 | VGG: 3.2407 |  29/90 saving the latest model at iter 299
+ [====================>............................................]  Step: 305ms | Tot: 10s28ms | Excl: 2.8514 | IPixel: 0.0239 | VGG: 3.2114 |  30/90 saving the latest model at iter 300
+ [=====================>...........................................]  Step: 629ms | Tot: 10s658ms | Excl: 2.8675 | IPixel: 0.0241 | VGG: 3.2780 |  31/90 saving the latest model at iter 301
+ [======================>..........................................]  Step: 337ms | Tot: 10s995ms | Excl: 2.8567 | IPixel: 0.0239 | VGG: 3.2435 |  32/90 saving the latest model at iter 302
+ [=======================>.........................................]  Step: 376ms | Tot: 11s372ms | Excl: 2.8521 | IPixel: 0.0236 | VGG: 3.2209 |  33/90 saving the latest model at iter 303
+ [=======================>.........................................]  Step: 427ms | Tot: 11s799ms | Excl: 2.8456 | IPixel: 0.0233 | VGG: 3.1932 |  34/90 saving the latest model at iter 304
+ [========================>........................................]  Step: 333ms | Tot: 12s132ms | Excl: 2.8913 | IPixel: 0.0231 | VGG: 3.2099 |  35/90 saving the latest model at iter 305
+ [=========================>.......................................]  Step: 367ms | Tot: 12s499ms | Excl: 2.8775 | IPixel: 0.0230 | VGG: 3.1801 |  36/90 saving the latest model at iter 306
+ [==========================>......................................]  Step: 335ms | Tot: 12s835ms | Excl: 2.8738 | IPixel: 0.0237 | VGG: 3.2255 |  37/90 saving the latest model at iter 307
+ [==========================>......................................]  Step: 423ms | Tot: 13s258ms | Excl: 2.8648 | IPixel: 0.0235 | VGG: 3.2000 |  38/90 saving the latest model at iter 308
+ [===========================>.....................................]  Step: 326ms | Tot: 13s585ms | Excl: 2.9314 | IPixel: 0.0235 | VGG: 3.2427 |  39/90 saving the latest model at iter 309
+ [============================>....................................]  Step: 302ms | Tot: 13s888ms | Excl: 2.9930 | IPixel: 0.0237 | VGG: 3.2815 |  40/90 saving the latest model at iter 310
+ [============================>....................................]  Step: 401ms | Tot: 14s289ms | Excl: 2.9761 | IPixel: 0.0235 | VGG: 3.2431 |  41/90 saving the latest model at iter 311
+ [=============================>...................................]  Step: 306ms | Tot: 14s596ms | Excl: 2.9671 | IPixel: 0.0235 | VGG: 3.2257 |  42/90 saving the latest model at iter 312
+ [==============================>..................................]  Step: 476ms | Tot: 15s73ms | Excl: 2.9533 | IPixel: 0.0234 | VGG: 3.2048 |  43/90 saving the latest model at iter 313
+ [===============================>.................................]  Step: 304ms | Tot: 15s377ms | Excl: 2.9822 | IPixel: 0.0234 | VGG: 3.2377 |  44/90 saving the latest model at iter 314
+ [===============================>.................................]  Step: 302ms | Tot: 15s680ms | Excl: 3.0392 | IPixel: 0.0237 | VGG: 3.2350 |  45/90 saving the latest model at iter 315
+ [================================>................................]  Step: 440ms | Tot: 16s121ms | Excl: 3.0409 | IPixel: 0.0240 | VGG: 3.2665 |  46/90 saving the latest model at iter 316
+ [=================================>...............................]  Step: 310ms | Tot: 16s431ms | Excl: 3.0318 | IPixel: 0.0239 | VGG: 3.2462 |  47/90 saving the latest model at iter 317
+ [=================================>...............................]  Step: 415ms | Tot: 16s847ms | Excl: 3.0625 | IPixel: 0.0243 | VGG: 3.3067 |  48/90 saving the latest model at iter 318
+ [==================================>..............................]  Step: 289ms | Tot: 17s136ms | Excl: 3.1065 | IPixel: 0.0245 | VGG: 3.3501 |  49/90 saving the latest model at iter 319
+ [===================================>.............................]  Step: 316ms | Tot: 17s452ms | Excl: 3.0950 | IPixel: 0.0243 | VGG: 3.3285 |  50/90 saving the latest model at iter 320
+ [====================================>............................]  Step: 370ms | Tot: 17s822ms | Excl: 3.0818 | IPixel: 0.0241 | VGG: 3.3033 |  51/90 saving the latest model at iter 321
+ [====================================>............................]  Step: 307ms | Tot: 18s130ms | Excl: 3.0740 | IPixel: 0.0241 | VGG: 3.2900 |  52/90 saving the latest model at iter 322
+ [=====================================>...........................]  Step: 387ms | Tot: 18s518ms | Excl: 3.0666 | IPixel: 0.0240 | VGG: 3.2747 |  53/90 saving the latest model at iter 323
+ [======================================>..........................]  Step: 321ms | Tot: 18s839ms | Excl: 3.0574 | IPixel: 0.0239 | VGG: 3.2579 |  54/90 saving the latest model at iter 324
+ [=======================================>.........................]  Step: 305ms | Tot: 19s145ms | Excl: 3.0478 | IPixel: 0.0239 | VGG: 3.2437 |  55/90 saving the latest model at iter 325
+ [=======================================>.........................]  Step: 428ms | Tot: 19s573ms | Excl: 3.0384 | IPixel: 0.0238 | VGG: 3.2287 |  56/90 saving the latest model at iter 326
+ [========================================>........................]  Step: 310ms | Tot: 19s884ms | Excl: 3.0269 | IPixel: 0.0236 | VGG: 3.2069 |  57/90 saving the latest model at iter 327
+ [=========================================>.......................]  Step: 382ms | Tot: 20s267ms | Excl: 3.0555 | IPixel: 0.0236 | VGG: 3.2288 |  58/90 saving the latest model at iter 328
+ [=========================================>.......................]  Step: 309ms | Tot: 20s577ms | Excl: 3.0489 | IPixel: 0.0235 | VGG: 3.2137 |  59/90 saving the latest model at iter 329
+ [==========================================>......................]  Step: 314ms | Tot: 20s891ms | Excl: 3.0412 | IPixel: 0.0234 | VGG: 3.2017 |  60/90 saving the latest model at iter 330
+ [===========================================>.....................]  Step: 486ms | Tot: 21s377ms | Excl: 3.0322 | IPixel: 0.0232 | VGG: 3.1842 |  61/90 saving the latest model at iter 331
+ [============================================>....................]  Step: 303ms | Tot: 21s681ms | Excl: 3.0505 | IPixel: 0.0232 | VGG: 3.1982 |  62/90 saving the latest model at iter 332
+ [============================================>....................]  Step: 398ms | Tot: 22s80ms | Excl: 3.0832 | IPixel: 0.0233 | VGG: 3.2062 |  63/90 saving the latest model at iter 333
+ [=============================================>...................]  Step: 308ms | Tot: 22s388ms | Excl: 3.0740 | IPixel: 0.0232 | VGG: 3.1896 |  64/90 saving the latest model at iter 334
+ [==============================================>..................]  Step: 315ms | Tot: 22s704ms | Excl: 3.0659 | IPixel: 0.0231 | VGG: 3.1757 |  65/90 saving the latest model at iter 335
+ [==============================================>..................]  Step: 470ms | Tot: 23s174ms | Excl: 3.0585 | IPixel: 0.0231 | VGG: 3.1669 |  66/90 saving the latest model at iter 336
+ [===============================================>.................]  Step: 304ms | Tot: 23s479ms | Excl: 3.0504 | IPixel: 0.0233 | VGG: 3.1703 |  67/90 saving the latest model at iter 337
+ [================================================>................]  Step: 382ms | Tot: 23s862ms | Excl: 3.0426 | IPixel: 0.0233 | VGG: 3.1666 |  68/90 saving the latest model at iter 338
+ [=================================================>...............]  Step: 314ms | Tot: 24s176ms | Excl: 3.0350 | IPixel: 0.0233 | VGG: 3.1591 |  69/90 saving the latest model at iter 339
+ [=================================================>...............]  Step: 316ms | Tot: 24s492ms | Excl: 3.0278 | IPixel: 0.0233 | VGG: 3.1482 |  70/90 saving the latest model at iter 340
+ [==================================================>..............]  Step: 436ms | Tot: 24s929ms | Excl: 3.0219 | IPixel: 0.0231 | VGG: 3.1381 |  71/90 saving the latest model at iter 341
+ [===================================================>.............]  Step: 311ms | Tot: 25s240ms | Excl: 3.0171 | IPixel: 0.0231 | VGG: 3.1275 |  72/90 saving the latest model at iter 342
+ [====================================================>............]  Step: 416ms | Tot: 25s656ms | Excl: 3.0364 | IPixel: 0.0232 | VGG: 3.1527 |  73/90 saving the latest model at iter 343
+ [====================================================>............]  Step: 306ms | Tot: 25s963ms | Excl: 3.0280 | IPixel: 0.0231 | VGG: 3.1369 |  74/90 saving the latest model at iter 344
+ [=====================================================>...........]  Step: 312ms | Tot: 26s275ms | Excl: 3.0211 | IPixel: 0.0231 | VGG: 3.1230 |  75/90 saving the latest model at iter 345
+ [======================================================>..........]  Step: 380ms | Tot: 26s656ms | Excl: 3.0141 | IPixel: 0.0231 | VGG: 3.1127 |  76/90 saving the latest model at iter 346
+ [======================================================>..........]  Step: 319ms | Tot: 26s975ms | Excl: 3.0061 | IPixel: 0.0229 | VGG: 3.0996 |  77/90 saving the latest model at iter 347
+ [=======================================================>.........]  Step: 358ms | Tot: 27s333ms | Excl: 3.0012 | IPixel: 0.0229 | VGG: 3.0883 |  78/90 saving the latest model at iter 348
+ [========================================================>........]  Step: 309ms | Tot: 27s642ms | Excl: 2.9953 | IPixel: 0.0228 | VGG: 3.0780 |  79/90 saving the latest model at iter 349
+ [=========================================================>.......]  Step: 304ms | Tot: 27s947ms | Excl: 2.9906 | IPixel: 0.0229 | VGG: 3.0748 |  80/90 saving the latest model at iter 350
+ [=========================================================>.......]  Step: 366ms | Tot: 28s313ms | Excl: 3.0208 | IPixel: 0.0230 | VGG: 3.1127 |  81/90 saving the latest model at iter 351
+ [==========================================================>......]  Step: 310ms | Tot: 28s623ms | Excl: 3.0158 | IPixel: 0.0230 | VGG: 3.1071 |  82/90 saving the latest model at iter 352
+ [===========================================================>.....]  Step: 456ms | Tot: 29s80ms | Excl: 3.0076 | IPixel: 0.0229 | VGG: 3.0949 |  83/90 saving the latest model at iter 353
+ [===========================================================>.....]  Step: 313ms | Tot: 29s393ms | Excl: 3.0019 | IPixel: 0.0229 | VGG: 3.0875 |  84/90 saving the latest model at iter 354
+ [============================================================>....]  Step: 324ms | Tot: 29s718ms | Excl: 2.9973 | IPixel: 0.0228 | VGG: 3.0818 |  85/90 saving the latest model at iter 355
+ [=============================================================>...]  Step: 373ms | Tot: 30s91ms | Excl: 2.9917 | IPixel: 0.0227 | VGG: 3.0759 |  86/90 saving the latest model at iter 356
+ [==============================================================>..]  Step: 323ms | Tot: 30s414ms | Excl: 3.0022 | IPixel: 0.0229 | VGG: 3.1133 |  87/90 saving the latest model at iter 357
+ [==============================================================>..]  Step: 412ms | Tot: 30s827ms | Excl: 3.0074 | IPixel: 0.0231 | VGG: 3.1428 |  88/90 saving the latest model at iter 358
+ [===============================================================>.]  Step: 305ms | Tot: 31s132ms | Excl: 3.0022 | IPixel: 0.0230 | VGG: 3.1329 |  89/90 saving the latest model at iter 359
+ [================================================================>]  Step: 313ms | Tot: 31s446ms | Excl: 2.9954 | IPixel: 0.0229 | VGG: 3.1191 |  90/90 
+saving the latest model at iter 360
+saving the latest model at the end of epoch 4, iters 360
+Time Taken: 32 sec
+Reset Dataset...
+
+Epoch: 4
+ [>................................................................]  Step: 587ms | Tot: 0ms | Excl: 2.5860 | IPixel: 0.0137 | VGG: 2.1534 |  1/90 saving the latest model at iter 361
+ [>................................................................]  Step: 506ms | Tot: 506ms | Excl: 2.5949 | IPixel: 0.0143 | VGG: 2.1441 |  2/90 saving the latest model at iter 362
+ [=>...............................................................]  Step: 315ms | Tot: 822ms | Excl: 2.7976 | IPixel: 0.0140 | VGG: 2.2189 |  3/90 saving the latest model at iter 363
+ [==>..............................................................]  Step: 292ms | Tot: 1s115ms | Excl: 3.3308 | IPixel: 0.0164 | VGG: 2.7249 |  4/90 saving the latest model at iter 364
+ [==>..............................................................]  Step: 365ms | Tot: 1s480ms | Excl: 3.1883 | IPixel: 0.0173 | VGG: 2.6688 |  5/90 saving the latest model at iter 365
+ [===>.............................................................]  Step: 314ms | Tot: 1s794ms | Excl: 3.0801 | IPixel: 0.0189 | VGG: 2.6653 |  6/90 saving the latest model at iter 366
+ [====>............................................................]  Step: 685ms | Tot: 2s480ms | Excl: 2.9766 | IPixel: 0.0185 | VGG: 2.6063 |  7/90 saving the latest model at iter 367
+ [=====>...........................................................]  Step: 310ms | Tot: 2s790ms | Excl: 2.8926 | IPixel: 0.0180 | VGG: 2.5003 |  8/90 saving the latest model at iter 368
+ [=====>...........................................................]  Step: 287ms | Tot: 3s77ms | Excl: 3.2412 | IPixel: 0.0183 | VGG: 2.7624 |  9/90 saving the latest model at iter 369
+ [======>..........................................................]  Step: 392ms | Tot: 3s470ms | Excl: 3.3805 | IPixel: 0.0182 | VGG: 2.8504 |  10/90 saving the latest model at iter 370
+ [=======>.........................................................]  Step: 292ms | Tot: 3s762ms | Excl: 3.3043 | IPixel: 0.0215 | VGG: 3.0319 |  11/90 saving the latest model at iter 371
+ [=======>.........................................................]  Step: 439ms | Tot: 4s202ms | Excl: 3.3948 | IPixel: 0.0239 | VGG: 3.2789 |  12/90 saving the latest model at iter 372
+ [========>........................................................]  Step: 314ms | Tot: 4s516ms | Excl: 3.3355 | IPixel: 0.0234 | VGG: 3.1956 |  13/90 saving the latest model at iter 373
+ [=========>.......................................................]  Step: 314ms | Tot: 4s830ms | Excl: 3.2783 | IPixel: 0.0229 | VGG: 3.1244 |  14/90 saving the latest model at iter 374
+ [==========>......................................................]  Step: 370ms | Tot: 5s201ms | Excl: 3.2388 | IPixel: 0.0224 | VGG: 3.0696 |  15/90 saving the latest model at iter 375
+ [==========>......................................................]  Step: 304ms | Tot: 5s506ms | Excl: 3.2248 | IPixel: 0.0234 | VGG: 3.1747 |  16/90 saving the latest model at iter 376
+ [===========>.....................................................]  Step: 611ms | Tot: 6s117ms | Excl: 3.1913 | IPixel: 0.0230 | VGG: 3.1379 |  17/90 saving the latest model at iter 377
+ [============>....................................................]  Step: 430ms | Tot: 6s547ms | Excl: 3.1593 | IPixel: 0.0231 | VGG: 3.1096 |  18/90 saving the latest model at iter 378
+ [=============>...................................................]  Step: 338ms | Tot: 6s886ms | Excl: 3.1248 | IPixel: 0.0226 | VGG: 3.0495 |  19/90 saving the latest model at iter 379
+ [=============>...................................................]  Step: 349ms | Tot: 7s235ms | Excl: 3.1003 | IPixel: 0.0222 | VGG: 2.9957 |  20/90 saving the latest model at iter 380
+ [==============>..................................................]  Step: 301ms | Tot: 7s537ms | Excl: 3.0812 | IPixel: 0.0220 | VGG: 2.9574 |  21/90 saving the latest model at iter 381
+ [===============>.................................................]  Step: 380ms | Tot: 7s918ms | Excl: 3.0478 | IPixel: 0.0216 | VGG: 2.9057 |  22/90 saving the latest model at iter 382
+ [===============>.................................................]  Step: 311ms | Tot: 8s230ms | Excl: 3.0338 | IPixel: 0.0213 | VGG: 2.8844 |  23/90 saving the latest model at iter 383
+ [================>................................................]  Step: 431ms | Tot: 8s661ms | Excl: 3.0523 | IPixel: 0.0212 | VGG: 2.9723 |  24/90 saving the latest model at iter 384
+ [=================>...............................................]  Step: 454ms | Tot: 9s115ms | Excl: 3.0571 | IPixel: 0.0222 | VGG: 3.1115 |  25/90 saving the latest model at iter 385
+ [==================>..............................................]  Step: 432ms | Tot: 9s548ms | Excl: 3.0383 | IPixel: 0.0220 | VGG: 3.0720 |  26/90 saving the latest model at iter 386
+ [==================>..............................................]  Step: 509ms | Tot: 10s57ms | Excl: 3.0662 | IPixel: 0.0217 | VGG: 3.1213 |  27/90 saving the latest model at iter 387
+ [===================>.............................................]  Step: 419ms | Tot: 10s476ms | Excl: 3.1211 | IPixel: 0.0216 | VGG: 3.1571 |  28/90 saving the latest model at iter 388
+ [====================>............................................]  Step: 426ms | Tot: 10s903ms | Excl: 3.0990 | IPixel: 0.0214 | VGG: 3.1122 |  29/90 saving the latest model at iter 389
+ [====================>............................................]  Step: 377ms | Tot: 11s281ms | Excl: 3.0833 | IPixel: 0.0214 | VGG: 3.0850 |  30/90 saving the latest model at iter 390
+ [=====================>...........................................]  Step: 279ms | Tot: 11s561ms | Excl: 3.0811 | IPixel: 0.0214 | VGG: 3.1103 |  31/90 saving the latest model at iter 391
+ [======================>..........................................]  Step: 452ms | Tot: 12s13ms | Excl: 3.0628 | IPixel: 0.0213 | VGG: 3.0774 |  32/90 saving the latest model at iter 392
+ [=======================>.........................................]  Step: 310ms | Tot: 12s323ms | Excl: 3.0481 | IPixel: 0.0213 | VGG: 3.0501 |  33/90 saving the latest model at iter 393
+ [=======================>.........................................]  Step: 302ms | Tot: 12s626ms | Excl: 3.0350 | IPixel: 0.0214 | VGG: 3.0312 |  34/90 saving the latest model at iter 394
+ [========================>........................................]  Step: 496ms | Tot: 13s123ms | Excl: 3.0174 | IPixel: 0.0211 | VGG: 2.9974 |  35/90 saving the latest model at iter 395
+ [=========================>.......................................]  Step: 429ms | Tot: 13s553ms | Excl: 3.0062 | IPixel: 0.0212 | VGG: 2.9884 |  36/90 saving the latest model at iter 396
+ [==========================>......................................]  Step: 397ms | Tot: 13s950ms | Excl: 2.9923 | IPixel: 0.0210 | VGG: 2.9625 |  37/90 saving the latest model at iter 397
+ [==========================>......................................]  Step: 315ms | Tot: 14s266ms | Excl: 2.9737 | IPixel: 0.0208 | VGG: 2.9264 |  38/90 saving the latest model at iter 398
+ [===========================>.....................................]  Step: 304ms | Tot: 14s570ms | Excl: 2.9637 | IPixel: 0.0207 | VGG: 2.9100 |  39/90 saving the latest model at iter 399
+ [============================>....................................]  Step: 458ms | Tot: 15s29ms | Excl: 2.9532 | IPixel: 0.0208 | VGG: 2.8981 |  40/90 saving the latest model at iter 400
+ [============================>....................................]  Step: 308ms | Tot: 15s338ms | Excl: 2.9434 | IPixel: 0.0206 | VGG: 2.8725 |  41/90 saving the latest model at iter 401
+ [=============================>...................................]  Step: 482ms | Tot: 15s820ms | Excl: 2.9333 | IPixel: 0.0204 | VGG: 2.8486 |  42/90 saving the latest model at iter 402
+ [==============================>..................................]  Step: 315ms | Tot: 16s135ms | Excl: 2.9218 | IPixel: 0.0204 | VGG: 2.8314 |  43/90 saving the latest model at iter 403
+ [===============================>.................................]  Step: 333ms | Tot: 16s469ms | Excl: 2.9094 | IPixel: 0.0202 | VGG: 2.8078 |  44/90 saving the latest model at iter 404
+ [===============================>.................................]  Step: 507ms | Tot: 16s976ms | Excl: 2.8953 | IPixel: 0.0201 | VGG: 2.7836 |  45/90 saving the latest model at iter 405
+ [================================>................................]  Step: 318ms | Tot: 17s295ms | Excl: 2.8841 | IPixel: 0.0199 | VGG: 2.7625 |  46/90 saving the latest model at iter 406
+ [=================================>...............................]  Step: 459ms | Tot: 17s755ms | Excl: 2.8784 | IPixel: 0.0198 | VGG: 2.7489 |  47/90 saving the latest model at iter 407
+ [=================================>...............................]  Step: 316ms | Tot: 18s72ms | Excl: 2.9103 | IPixel: 0.0200 | VGG: 2.8268 |  48/90 saving the latest model at iter 408
+ [==================================>..............................]  Step: 4s358ms | Tot: 22s430ms | Excl: 2.9021 | IPixel: 0.0199 | VGG: 2.8183 |  49/90 saving the latest model at iter 409
+ [===================================>.............................]  Step: 383ms | Tot: 22s813ms | Excl: 2.8965 | IPixel: 0.0200 | VGG: 2.8130 |  50/90 saving the latest model at iter 410
+ [====================================>............................]  Step: 369ms | Tot: 23s183ms | Excl: 2.9206 | IPixel: 0.0202 | VGG: 2.8823 |  51/90 saving the latest model at iter 411
+ [====================================>............................]  Step: 436ms | Tot: 23s620ms | Excl: 2.9140 | IPixel: 0.0202 | VGG: 2.8722 |  52/90 saving the latest model at iter 412
+ [=====================================>...........................]  Step: 304ms | Tot: 23s925ms | Excl: 2.9092 | IPixel: 0.0202 | VGG: 2.8626 |  53/90 saving the latest model at iter 413
+ [======================================>..........................]  Step: 306ms | Tot: 24s231ms | Excl: 2.9216 | IPixel: 0.0205 | VGG: 2.8991 |  54/90 saving the latest model at iter 414
+ [=======================================>.........................]  Step: 608ms | Tot: 24s839ms | Excl: 2.9348 | IPixel: 0.0205 | VGG: 2.9321 |  55/90 saving the latest model at iter 415
+ [=======================================>.........................]  Step: 313ms | Tot: 25s153ms | Excl: 2.9265 | IPixel: 0.0205 | VGG: 2.9137 |  56/90 saving the latest model at iter 416
+ [========================================>........................]  Step: 387ms | Tot: 25s540ms | Excl: 2.9149 | IPixel: 0.0203 | VGG: 2.8902 |  57/90 saving the latest model at iter 417
+ [=========================================>.......................]  Step: 435ms | Tot: 25s975ms | Excl: 2.9097 | IPixel: 0.0202 | VGG: 2.8723 |  58/90 saving the latest model at iter 418
+ [=========================================>.......................]  Step: 433ms | Tot: 26s409ms | Excl: 2.9053 | IPixel: 0.0202 | VGG: 2.8615 |  59/90 saving the latest model at iter 419
+ [==========================================>......................]  Step: 468ms | Tot: 26s877ms | Excl: 2.9592 | IPixel: 0.0203 | VGG: 2.8890 |  60/90 saving the latest model at iter 420
+ [===========================================>.....................]  Step: 430ms | Tot: 27s307ms | Excl: 2.9517 | IPixel: 0.0202 | VGG: 2.8730 |  61/90 saving the latest model at iter 421
+ [============================================>....................]  Step: 491ms | Tot: 27s799ms | Excl: 2.9462 | IPixel: 0.0202 | VGG: 2.8619 |  62/90 saving the latest model at iter 422
+ [============================================>....................]  Step: 422ms | Tot: 28s221ms | Excl: 2.9687 | IPixel: 0.0203 | VGG: 2.9137 |  63/90 saving the latest model at iter 423
+ [=============================================>...................]  Step: 433ms | Tot: 28s655ms | Excl: 2.9610 | IPixel: 0.0202 | VGG: 2.8968 |  64/90 saving the latest model at iter 424
+ [==============================================>..................]  Step: 472ms | Tot: 29s127ms | Excl: 2.9722 | IPixel: 0.0202 | VGG: 2.9358 |  65/90 saving the latest model at iter 425
+ [==============================================>..................]  Step: 434ms | Tot: 29s562ms | Excl: 2.9644 | IPixel: 0.0201 | VGG: 2.9191 |  66/90 saving the latest model at iter 426
+ [===============================================>.................]  Step: 521ms | Tot: 30s84ms | Excl: 2.9567 | IPixel: 0.0200 | VGG: 2.9010 |  67/90 saving the latest model at iter 427
+ [================================================>................]  Step: 324ms | Tot: 30s409ms | Excl: 2.9523 | IPixel: 0.0199 | VGG: 2.8916 |  68/90 saving the latest model at iter 428
+ [=================================================>...............]  Step: 313ms | Tot: 30s722ms | Excl: 2.9444 | IPixel: 0.0198 | VGG: 2.8758 |  69/90 saving the latest model at iter 429
+ [=================================================>...............]  Step: 353ms | Tot: 31s75ms | Excl: 2.9398 | IPixel: 0.0199 | VGG: 2.8722 |  70/90 saving the latest model at iter 430
+ [==================================================>..............]  Step: 312ms | Tot: 31s388ms | Excl: 2.9318 | IPixel: 0.0198 | VGG: 2.8589 |  71/90 saving the latest model at iter 431
+ [===================================================>.............]  Step: 365ms | Tot: 31s754ms | Excl: 2.9518 | IPixel: 0.0199 | VGG: 2.8649 |  72/90 saving the latest model at iter 432
+ [====================================================>............]  Step: 315ms | Tot: 32s69ms | Excl: 2.9465 | IPixel: 0.0199 | VGG: 2.8582 |  73/90 saving the latest model at iter 433
+ [====================================================>............]  Step: 327ms | Tot: 32s397ms | Excl: 2.9407 | IPixel: 0.0199 | VGG: 2.8494 |  74/90 saving the latest model at iter 434
+ [=====================================================>...........]  Step: 376ms | Tot: 32s773ms | Excl: 2.9414 | IPixel: 0.0200 | VGG: 2.8828 |  75/90 saving the latest model at iter 435
+ [======================================================>..........]  Step: 338ms | Tot: 33s112ms | Excl: 2.9354 | IPixel: 0.0199 | VGG: 2.8702 |  76/90 saving the latest model at iter 436
+ [======================================================>..........]  Step: 437ms | Tot: 33s549ms | Excl: 2.9317 | IPixel: 0.0199 | VGG: 2.8621 |  77/90 saving the latest model at iter 437
+ [=======================================================>.........]  Step: 381ms | Tot: 33s930ms | Excl: 2.9264 | IPixel: 0.0200 | VGG: 2.8544 |  78/90 saving the latest model at iter 438
+ [========================================================>........]  Step: 426ms | Tot: 34s356ms | Excl: 2.9225 | IPixel: 0.0199 | VGG: 2.8499 |  79/90 saving the latest model at iter 439
+ [=========================================================>.......]  Step: 374ms | Tot: 34s731ms | Excl: 2.9177 | IPixel: 0.0199 | VGG: 2.8432 |  80/90 saving the latest model at iter 440
+ [=========================================================>.......]  Step: 364ms | Tot: 35s96ms | Excl: 2.9234 | IPixel: 0.0201 | VGG: 2.8603 |  81/90 saving the latest model at iter 441
+ [==========================================================>......]  Step: 432ms | Tot: 35s528ms | Excl: 2.9192 | IPixel: 0.0201 | VGG: 2.8504 |  82/90 saving the latest model at iter 442
+ [===========================================================>.....]  Step: 417ms | Tot: 35s946ms | Excl: 2.9111 | IPixel: 0.0200 | VGG: 2.8331 |  83/90 saving the latest model at iter 443
+saving checkpoint interrupted at epoch 4, iters 443

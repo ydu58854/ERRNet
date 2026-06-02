@@ -1,6 +1,15 @@
 from .base_options import BaseOptions
 
 
+PHASE_D_DATA_CANDIDATES = {
+    'none': {},
+    'gamma_1p1_1p5': {
+        'low_gamma': 1.1,
+        'high_gamma': 1.5,
+    },
+}
+
+
 class TrainOptions(BaseOptions):
     def initialize(self):
         BaseOptions.initialize(self)        
@@ -10,6 +19,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--print_freq', type=int, default=100, help='frequency of showing training results on console')
         self.parser.add_argument('--no_html', action='store_true', help='do not save intermediate training results to [opt.checkpoints_dir]/[opt.name]/web/')
         self.parser.add_argument('--save_epoch_freq', type=int, default=10, help='frequency of saving checkpoints at the end of epochs')
+        self.parser.add_argument('--save_iter_freq', type=int, default=0, help='frequency of saving the latest checkpoint by iteration; 0 disables iteration checkpointing')
         self.parser.add_argument('--debug', action='store_true', help='only do one epoch and displays at each iteration')
 
         # for training (Note: in train_errnet.py, we mannually tune the training protocol, but you can also use following setting by modifying the code in errnet_model.py)
@@ -21,6 +31,13 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--high_sigma', type=float, default=5, help='max sigma in synthetic dataset')
         self.parser.add_argument('--low_gamma', type=float, default=1.3, help='max gamma in synthetic dataset')
         self.parser.add_argument('--high_gamma', type=float, default=1.3, help='max gamma in synthetic dataset')
+        self.parser.add_argument(
+            '--phase_d_candidate',
+            type=str,
+            default='none',
+            choices=sorted(PHASE_D_DATA_CANDIDATES.keys()),
+            help='optional Phase D data strategy preset; none preserves existing synthetic data parameters',
+        )
         
         # data augmentation
         self.parser.add_argument('--batchSize', '-b', type=int, default=1, help='input batch size')
@@ -39,5 +56,13 @@ class TrainOptions(BaseOptions):
         
         self.parser.add_argument('--lambda_gan', type=float, default=0.01, help='weight for gan loss')
         self.parser.add_argument('--lambda_vgg', type=float, default=0.1, help='weight for vgg loss')
+        self.parser.add_argument('--pixel_loss_weight', type=float, default=0.2, help='weight for MSE term inside aligned pixel loss')
+        self.parser.add_argument('--gradient_loss_weight', type=float, default=0.4, help='weight for GradientLoss term inside aligned pixel loss')
+        self.parser.add_argument('--lambda_exclusion', type=float, default=0.0, help='weight for optional transmission/residual gradient exclusion loss')
         
         self.isTrain = True
+
+    def postprocess_options(self, opt):
+        candidate = PHASE_D_DATA_CANDIDATES[opt.phase_d_candidate]
+        for name, value in candidate.items():
+            setattr(opt, name, value)

@@ -39,11 +39,12 @@ def set_learning_rate(lr):
         util.set_opt_param(optimizer, 'lr', lr)
 
 
-set_learning_rate(1e-4)
 while engine.epoch < 80:
-    if engine.epoch == 65:
-        set_learning_rate(5e-5)
-    if engine.epoch == 70:
+    if engine.epoch >= 70:
         set_learning_rate(1e-5)
+    elif engine.epoch >= 65:
+        set_learning_rate(5e-5)
+    else:
+        set_learning_rate(1e-4)
         
     engine.train(train_dataloader_fusion)

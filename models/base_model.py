@@ -53,8 +53,12 @@ class BaseModel():
             model_name = os.path.join(self.save_dir, self.name() + '_%03d_%08d.pt' % ((epoch), (iterations)))
         else:
             model_name = os.path.join(self.save_dir, self.name() + '_' + label + '.pt')
-            
-        torch.save(self.state_dict(), model_name)
+
+        tmp_name = model_name + '.tmp'
+        if os.path.exists(tmp_name):
+            os.remove(tmp_name)
+        torch.save(self.state_dict(), tmp_name)
+        os.replace(tmp_name, model_name)
 
     def _init_optimizer(self, optimizers):
         self.optimizers = optimizers

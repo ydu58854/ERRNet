@@ -17,7 +17,9 @@ class CSFlow:
 
     def __calculate_CS(self, scaled_distances, axis_for_normalization=TensorAxis.C):
         self.scaled_distances = scaled_distances
-        self.cs_weights_before_normalization = torch.exp((self.b - scaled_distances) / self.sigma)
+        logits = (self.b - scaled_distances) / self.sigma
+        logits = logits - torch.max(logits, dim=axis_for_normalization, keepdim=True)[0]
+        self.cs_weights_before_normalization = torch.exp(logits)
         # self.cs_weights_before_normalization = 1 / (1 + scaled_distances)
         self.cs_NHWC = CSFlow.sum_normalize(self.cs_weights_before_normalization, axis_for_normalization)
         
@@ -138,7 +140,7 @@ class CSFlow:
     @staticmethod
     def sum_normalize(cs, axis=TensorAxis.C):
         reduce_sum = torch.sum(cs, dim=axis, keepdim=True)
-        cs_normalize = torch.div(cs, reduce_sum)
+        cs_normalize = torch.div(cs, reduce_sum.clamp_min(1e-12))
         return cs_normalize
 
     def center_by_T(self, T_features, I_features):
@@ -155,7 +157,7 @@ class CSFlow:
     @staticmethod
     def l2_normalize_channelwise(features):
         norms = features.norm(p=2, dim=TensorAxis.C, keepdim=True)
-        features = features.div(norms)
+        features = features.div(norms.clamp_min(1e-12))
         return features
 
     def patch_decomposition(self, T_features):
@@ -253,7 +255,7 @@ def CX_loss(I_features, T_features, deformation=False, dis=False):
         CS = torch.mean(k_max_NC, dim=1)
         # score = 1/CS
         # score = torch.exp(-CS*10)
-        score = -torch.log(CS)
+        score = -torch.log(CS.clamp_min(1e-12))
     # reduce mean over N dim
     # CX_loss = torch.mean(CX_loss)
     return score

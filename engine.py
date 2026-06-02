@@ -63,24 +63,32 @@ class Engine(object):
                     t = (time.time() - iter_start_time)          
 
             self.iterations += 1
-    
+            if opt.save_iter_freq > 0 and self.iterations % opt.save_iter_freq == 0:
+                print('saving the latest model at iter %d' % self.iterations)
+                model.save(label='latest')
+
         self.epoch += 1
 
-        if not self.opt.no_log:
-            if self.epoch % opt.save_epoch_freq == 0:
-                print('saving the model at epoch %d, iters %d' %
-                    (self.epoch, self.iterations))
-                model.save()
-            
-            print('saving the latest model at the end of epoch %d, iters %d' % 
+        if self.epoch % opt.save_epoch_freq == 0:
+            print('saving the model at epoch %d, iters %d' %
                 (self.epoch, self.iterations))
-            model.save(label='latest')
+            model.save()
 
+        print('saving the latest model at the end of epoch %d, iters %d' %
+            (self.epoch, self.iterations))
+        model.save(label='latest')
+
+        if not self.opt.no_log:
             print('Time Taken: %d sec' %
                 (time.time() - epoch_start_time))
                 
         # model.update_learning_rate()
         train_loader.reset()
+
+    def save_checkpoint(self, label='latest'):
+        print('saving checkpoint %s at epoch %d, iters %d' %
+            (label, self.epoch, self.iterations))
+        self.model.save(label=label)
 
     def eval(self, val_loader, dataset_name, savedir=None, loss_key=None, **kwargs):
         

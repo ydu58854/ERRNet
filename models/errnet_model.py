@@ -228,6 +228,10 @@ class ERRNetModel(ERRNetBase):
             vggloss = losses.ContentLoss()
             vggloss.initialize(losses.VGGLoss(self.vgg))
             self.loss_dic['t_vgg'] = vggloss
+            if getattr(opt, 'lambda_exclusion', 0.0) > 0:
+                exclusion_loss = losses.ContentLoss()
+                exclusion_loss.initialize(losses.ExclusionLoss())
+                self.loss_dic['exclusion'] = exclusion_loss
 
             cxloss = losses.ContentLoss()
             if opt.unaligned_loss == 'vgg':
@@ -281,6 +285,7 @@ class ERRNetModel(ERRNetBase):
         self.loss_icnn_pixel = None
         self.loss_icnn_vgg = None
         self.loss_G_GAN = None
+        self.loss_exclusion = None
 
         if self.opt.lambda_gan > 0:
             self.loss_G_GAN = self.loss_dic['gan'].get_g_loss(
@@ -299,6 +304,12 @@ class ERRNetModel(ERRNetBase):
             self.loss_CX = self.loss_dic['t_cx'].get_loss(self.output_i, self.target_t)
             
             self.loss_G += self.loss_CX
+
+        lambda_exclusion = getattr(self.opt, 'lambda_exclusion', 0.0)
+        if lambda_exclusion > 0:
+            self.loss_exclusion = self.loss_dic['exclusion'].get_loss(
+                self.output_i, self.input)
+            self.loss_G += self.loss_exclusion*lambda_exclusion
         
         self.loss_G.backward()
 
@@ -346,6 +357,8 @@ class ERRNetModel(ERRNetBase):
 
         if self.loss_CX is not None:
             ret_errors['CX'] = self.loss_CX.item()
+        if self.loss_exclusion is not None:
+            ret_errors['Excl'] = self.loss_exclusion.item()
 
         return ret_errors
 
@@ -434,6 +447,10 @@ class NetworkWrapper(ERRNetBase):
             vggloss = losses.ContentLoss()
             vggloss.initialize(losses.VGGLoss(self.vgg))
             self.loss_dic['t_vgg'] = vggloss
+            if getattr(opt, 'lambda_exclusion', 0.0) > 0:
+                exclusion_loss = losses.ContentLoss()
+                exclusion_loss.initialize(losses.ExclusionLoss())
+                self.loss_dic['exclusion'] = exclusion_loss
 
             cxloss = losses.ContentLoss()
             if opt.unaligned_loss == 'vgg':
@@ -484,6 +501,7 @@ class NetworkWrapper(ERRNetBase):
         self.loss_icnn_pixel = None
         self.loss_icnn_vgg = None
         self.loss_G_GAN = None
+        self.loss_exclusion = None
 
         if self.opt.lambda_gan > 0:
             self.loss_G_GAN = self.loss_dic['gan'].get_g_loss(
@@ -504,6 +522,12 @@ class NetworkWrapper(ERRNetBase):
             self.loss_CX = self.loss_dic['t_cx'].get_loss(self.output_i, self.target_t)
             
             self.loss_G += self.loss_CX
+
+        lambda_exclusion = getattr(self.opt, 'lambda_exclusion', 0.0)
+        if lambda_exclusion > 0:
+            self.loss_exclusion = self.loss_dic['exclusion'].get_loss(
+                self.output_i, self.input)
+            self.loss_G += self.loss_exclusion*lambda_exclusion
         
         self.loss_G.backward()
 
@@ -534,6 +558,8 @@ class NetworkWrapper(ERRNetBase):
             ret_errors['D'] = self.loss_D.item()
         if self.loss_CX is not None:
             ret_errors['CX'] = self.loss_CX.item()
+        if self.loss_exclusion is not None:
+            ret_errors['Excl'] = self.loss_exclusion.item()
 
         return ret_errors
 

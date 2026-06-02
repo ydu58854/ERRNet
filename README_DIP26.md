@@ -12,6 +12,48 @@ git checkout dip26
 
 ### 1.2 Setup the environment
 
+Recommended on this workspace: use the packed ERRNet environment from the
+persistent disk.
+
+Archive:
+
+```text
+/inspire/hdd/global_user/yanjunchi-24040/dyh/conda_envs/packed/errnet-py310-cu128-20260525.tar.gz
+```
+
+SHA256:
+
+```text
+95379e971c43b4d8a69ce2f5945ed080e9434fd9faa0be784fb09c1ab0131ccf
+```
+
+Unpack and activate:
+
+```bash
+mkdir -p /inspire/hdd/global_user/yanjunchi-24040/dyh/conda_envs/errnet-py310-cu128
+tar -xzf /inspire/hdd/global_user/yanjunchi-24040/dyh/conda_envs/packed/errnet-py310-cu128-20260525.tar.gz -C /inspire/hdd/global_user/yanjunchi-24040/dyh/conda_envs/errnet-py310-cu128
+source /inspire/hdd/global_user/yanjunchi-24040/dyh/conda_envs/errnet-py310-cu128/bin/activate
+conda-unpack
+```
+
+Run commands from the ERRNet repository after activation:
+
+```bash
+cd /inspire/hdd/global_user/yanjunchi-24040/dyh/数字图像处理/ERRNet
+python test_errnet.py --name errnet --dataset ceilnet_table2 -r --icnn_path checkpoints/errnet/errnet_060_00463920.pt --hyper
+```
+
+The current machine also has the live conda environment at
+`/opt/conda/envs/errnet`, so this works without unpacking:
+
+```bash
+conda activate errnet
+cd /inspire/hdd/global_user/yanjunchi-24040/dyh/数字图像处理/ERRNet
+python test_errnet.py --name errnet --dataset ceilnet_table2 -r --icnn_path checkpoints/errnet/errnet_060_00463920.pt --hyper
+```
+
+To recreate the environment from scratch instead of using the archive:
+
 ```bash
 conda create -n errnet python=3.10 -y
 conda activate errnet
@@ -23,6 +65,8 @@ pip install visdom==0.2.4 --no-build-isolation
 
 Notes:
 - Install the correct `torch`/`torchvision` version for your machine. Use a CUDA build if you have a GPU, and a CPU build otherwise. (Refer to https://pytorch.org/get-started/previous-versions/)
+- The packed archive was created from the tested environment on 2026-05-25.
+  It targets Python 3.10 and PyTorch 2.7.0 cu128 on Linux x86_64.
 
 ### 1.3 Download files
 
@@ -111,6 +155,46 @@ python train_errnet.py --name errnet --hyper
 python train_errnet.py --name errnet_cpu --hyper --gpu_ids -1
 ```
 
+Optional local loss-weight experiment:
+
+```bash
+python train_errnet.py --name errnet_loss_weight_smoke --hyper --pixel_loss_weight 0.2 --gradient_loss_weight 0.4
+```
+
+The defaults keep the aligned pixel-loss composition compatible with the
+baseline: MSE weight `0.2` and GradientLoss weight `0.4`.
+
+Optional Phase C exclusion-loss smoke:
+
+```bash
+python train_errnet.py --name errnet_phaseC_exclusion_smoke --hyper --lambda_exclusion 0.001 --nEpochs 1 --max_dataset_size 2 --nThreads 0 --display_id 0 --save_iter_freq 1
+```
+
+`--lambda_exclusion 0.0` is the default and disables the extra term. Positive
+values add a transmission/residual gradient exclusion loss using `input -
+output` as a residual proxy; this does not change the network, loader, metrics,
+or checkpoint schema.
+
+Optional Phase D data-strategy screening:
+
+```bash
+python train_errnet.py --name errnet_phaseD_gamma_1p1_1p5_10ep --hyper --phase_d_candidate gamma_1p1_1p5 --nEpochs 10 --save_iter_freq 500 --nThreads 0 --display_id 0
+```
+
+`--phase_d_candidate none` is the default and preserves the original synthetic
+data parameters. The `gamma_1p1_1p5` preset changes only the synthetic gamma
+range to `low_gamma=1.1` and `high_gamma=1.5`; omit the flag or pass `none` to
+roll back to the old defaults.
+
+For long aligned runs, save a refreshable latest checkpoint during an epoch:
+
+```bash
+python train_errnet.py --name errnet_improved_retrain_60ep --hyper --pixel_loss_weight 0.2 --gradient_loss_weight 0.4 --save_iter_freq 500
+```
+
+`--save_iter_freq 0` is the default and preserves the original epoch-only save
+cadence.
+
 ### 4.2 Finetune on unaligned data
 
 
@@ -135,4 +219,3 @@ python train_errnet_unaligned.py --name errnet_unaligned_ft_cpu --hyper -r --gpu
 | objects | 24.85 | 0.8980 | 0.9817 | 0.0029|
 | postcard | 22.07 | 0.8773 | 0.9463 | 0.0044 |
 | wild | 25.18 | 0.886 | 0.9359 | 0.0083|
-

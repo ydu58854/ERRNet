@@ -6,6 +6,8 @@ import torch.backends.cudnn as cudnn
 import data.reflect_dataset as datasets
 import util.util as util
 import data
+import signal
+import sys
 
 opt = TrainOptions().parse()
 
@@ -63,6 +65,14 @@ eval_dataloader_real = datasets.DataLoader(
 """Main Loop"""
 engine = Engine(opt)
 
+def save_interrupt_checkpoint(signum, frame):
+    if engine.iterations > 0:
+        engine.save_checkpoint(label='interrupted')
+    sys.exit(128 + signum)
+
+signal.signal(signal.SIGINT, save_interrupt_checkpoint)
+signal.signal(signal.SIGTERM, save_interrupt_checkpoint)
+
 def set_learning_rate(lr):
     for optimizer in engine.model.optimizers:
         print('[i] set learning rate to {}'.format(lr))
@@ -75,7 +85,7 @@ if opt.resume:
 engine.model.opt.lambda_gan = 0
 # engine.model.opt.lambda_gan = 0.01
 set_learning_rate(1e-4)
-while engine.epoch < 60:
+while engine.epoch < opt.nEpochs:
     if engine.epoch == 20:
         engine.model.opt.lambda_gan = 0.01 # gan loss is added after epoch 20
     if engine.epoch == 30:

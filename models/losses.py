@@ -45,6 +45,28 @@ class MultipleLoss(nn.Module):
         return total_loss
 
 
+class ExclusionLoss(nn.Module):
+    def __init__(self, eps=1e-6):
+        super(ExclusionLoss, self).__init__()
+        self.eps = eps
+
+    def _normalized_abs_gradient(self, tensor):
+        gradx, grady = compute_gradient(tensor)
+        gradx = gradx.abs()
+        grady = grady.abs()
+        gradx = gradx / gradx.mean(dim=(1, 2, 3), keepdim=True).clamp_min(self.eps)
+        grady = grady / grady.mean(dim=(1, 2, 3), keepdim=True).clamp_min(self.eps)
+        return gradx, grady
+
+    def forward(self, predict, input_image):
+        residual = input_image - predict
+        pred_gradx, pred_grady = self._normalized_abs_gradient(predict)
+        residual_gradx, residual_grady = self._normalized_abs_gradient(residual)
+        loss_x = (pred_gradx * residual_gradx).mean()
+        loss_y = (pred_grady * residual_grady).mean()
+        return loss_x + loss_y
+
+
 class MeanShift(nn.Conv2d):
     def __init__(self, data_mean, data_std, data_range=1, norm=True):
         """norm (bool): normalize/denormalize the stats"""
@@ -254,8 +276,10 @@ def init_loss(opt, tensor):
 
     loss_dic = {}
 
+    pixel_loss_weight = getattr(opt, 'pixel_loss_weight', 0.2)
+    gradient_loss_weight = getattr(opt, 'gradient_loss_weight', 0.4)
     pixel_loss = ContentLoss()
-    pixel_loss.initialize(MultipleLoss([nn.MSELoss(), GradientLoss()], [0.2,0.4]))
+    pixel_loss.initialize(MultipleLoss([nn.MSELoss(), GradientLoss()], [pixel_loss_weight, gradient_loss_weight]))
 
     loss_dic['t_pixel'] = pixel_loss
     loss_dic['r_pixel'] = pixel_loss

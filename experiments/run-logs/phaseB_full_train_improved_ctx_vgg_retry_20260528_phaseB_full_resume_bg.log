@@ -1,0 +1,4 @@
+[train-bg] errnet_phaseB_full_improved_ctx_vgg_retry
+[resume-bg] latest checkpoint in checkpoints/errnet_phaseB_full_improved_ctx_vgg_retry
+[run] 20260528_phaseB_full_resume_bg
+[start] 2026-05-28 19:34:58 +0800
