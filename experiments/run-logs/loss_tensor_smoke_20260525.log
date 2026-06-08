@@ -1,3 +1,0 @@
-stty: 'standard input': Inappropriate ioctl for device
-{'shape': (2, 3, 16, 16), 'dtype': 'torch.float32', 'device': 'cpu', 'loss_dtype': 'torch.float32', 'loss_device': 'cpu', 'loss_finite': True, 'pixel_loss_weight': 0.2, 'gradient_loss_weight': 0.4}
-STATUS loss_tensor_smoke status=0

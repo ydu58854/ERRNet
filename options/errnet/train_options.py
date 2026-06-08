@@ -45,6 +45,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--fineSize', type=str, default='224,224', help='then crop to this size')
         self.parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data augmentation')
         self.parser.add_argument('--resize_or_crop', type=str, default='resize_and_crop', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
+        self.parser.add_argument('--train_synthetic_only', action='store_true', help='train only on aligned synthetic CEIL data; default keeps existing synthetic/real fusion')
 
         # for discriminator
         self.parser.add_argument('--which_model_D', type=str, default='disc_vgg', choices=['disc_vgg', 'disc_patch'])
@@ -58,7 +59,11 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--lambda_vgg', type=float, default=0.1, help='weight for vgg loss')
         self.parser.add_argument('--pixel_loss_weight', type=float, default=0.2, help='weight for MSE term inside aligned pixel loss')
         self.parser.add_argument('--gradient_loss_weight', type=float, default=0.4, help='weight for GradientLoss term inside aligned pixel loss')
+        self.parser.add_argument('--lambda_laplacian', type=float, default=0.0, help='weight for optional aligned Laplacian edge guidance loss')
         self.parser.add_argument('--lambda_exclusion', type=float, default=0.0, help='weight for optional transmission/residual gradient exclusion loss')
+        self.parser.add_argument('--lambda_reflection', type=float, default=0.0, help='weight for optional aligned reflection residual reconstruction loss')
+        self.parser.add_argument('--lambda_composition', type=float, default=0.0, help='weight for optional input/transmission/reflection composition consistency loss')
+        self.parser.add_argument('--composition_alpha', type=float, default=1.0, help='reflection scale alpha in input ~= T_hat + alpha * R_hat consistency loss')
         
         self.isTrain = True
 

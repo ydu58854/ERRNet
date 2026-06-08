@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 import os
 import numpy as np
@@ -23,6 +24,69 @@ def _torch_load_compat(path, map_location=None):
         return torch.load(path, map_location=map_location, weights_only=False)
     except TypeError:
         return torch.load(path, map_location=map_location)
+
+
+def _wrap_data_parallel(module, gpu_ids):
+    if len(gpu_ids) > 1:
+        return nn.DataParallel(module, device_ids=gpu_ids)
+    return module
+
+
+def _has_trainable_params(module):
+    return any(param.requires_grad for param in module.parameters())
+
+
+def _wrap_parallel(module, opt):
+    if getattr(opt, 'distributed', False) and _has_trainable_params(module):
+        return DDP(
+            module,
+            device_ids=[opt.local_rank],
+            output_device=opt.local_rank,
+            broadcast_buffers=False,
+            find_unused_parameters=False,
+        )
+    return _wrap_data_parallel(module, opt.gpu_ids)
+
+
+def _unwrap_data_parallel(module):
+    return module.module if isinstance(module, (nn.DataParallel, DDP)) else module
+
+
+def _module_state_dict(module):
+    return _unwrap_data_parallel(module).state_dict()
+
+
+def _load_module_state_dict(module, state_dict):
+    cleaned_state_dict = state_dict
+    if any(key.startswith('module.') for key in state_dict.keys()):
+        cleaned_state_dict = {
+            key[7:] if key.startswith('module.') else key: value
+            for key, value in state_dict.items()
+        }
+    target_module = _unwrap_data_parallel(module)
+    target_keys = set(target_module.state_dict().keys())
+    source_keys = set(cleaned_state_dict.keys())
+    missing_keys = target_keys - source_keys
+    unexpected_keys = source_keys - target_keys
+    missing_non_reflection = [
+        key for key in missing_keys if not key.startswith('reflection_head.')
+    ]
+    unexpected_non_reflection = [
+        key for key in unexpected_keys if not key.startswith('reflection_head.')
+    ]
+    if missing_non_reflection or unexpected_non_reflection:
+        target_module.load_state_dict(cleaned_state_dict)
+        return
+
+    incompatible = target_module.load_state_dict(cleaned_state_dict, strict=False)
+    if incompatible.missing_keys or incompatible.unexpected_keys:
+        print(
+            '[i] loaded checkpoint with reflection head key mismatch: '
+            'missing={}, unexpected={}'.format(
+                list(incompatible.missing_keys),
+                list(incompatible.unexpected_keys),
+            )
+        )
 
 
 def tensor2im(image_tensor, imtype=np.uint8):
@@ -97,16 +161,17 @@ class ERRNetBase(BaseModel):
             raise NotImplementedError('Mode [%s] is not implemented' % mode)
         
         if len(self.gpu_ids) > 0:  # transfer data into gpu
-            input = input.to(device=self.gpu_ids[0])
+            input = input.to(device=self.device, non_blocking=True)
             if target_t is not None:
-                target_t = target_t.to(device=self.gpu_ids[0])
+                target_t = target_t.to(device=self.device, non_blocking=True)
             if target_r is not None:
-                target_r = target_r.to(device=self.gpu_ids[0])                
+                target_r = target_r.to(device=self.device, non_blocking=True)
         
         self.input = input
         
         self.input_edge = self.edge_map(self.input)
         self.target_t = target_t
+        self.target_r = target_r
         self.data_name = data_name
 
         self.issyn = not _flag_enabled(data, 'real', default=False)
@@ -138,10 +203,15 @@ class ERRNetBase(BaseModel):
                     name = os.path.splitext(os.path.basename(self.data_name[0]))[0]
                     if not os.path.exists(join(savedir, name)):
                         os.makedirs(join(savedir, name))
+                    output_r = tensor2im(self.output_r).astype(np.uint8) if self.output_r is not None else None
                     if suffix is not None:
                         Image.fromarray(output_i.astype(np.uint8)).save(join(savedir, name,'{}_{}.png'.format(self.opt.name, suffix)))
+                        if output_r is not None:
+                            Image.fromarray(output_r).save(join(savedir, name,'{}_{}_reflection.png'.format(self.opt.name, suffix)))
                     else:
                         Image.fromarray(output_i.astype(np.uint8)).save(join(savedir, name, '{}.png'.format(self.opt.name)))
+                        if output_r is not None:
+                            Image.fromarray(output_r).save(join(savedir, name, '{}_reflection.png'.format(self.opt.name)))
                     Image.fromarray(target.astype(np.uint8)).save(join(savedir, name, 't_label.png'))
                     Image.fromarray(tensor2im(self.input).astype(np.uint8)).save(join(savedir, name, 'm_input.png'))
                 else:
@@ -182,6 +252,9 @@ class ERRNetBase(BaseModel):
             if self.data_name is not None and savedir is not None:                
                 Image.fromarray(output_i.astype(np.uint8)).save(join(savedir, name, '{}.png'.format(self.opt.name)))
                 Image.fromarray(tensor2im(self.input).astype(np.uint8)).save(join(savedir, name, 'm_input.png'))
+                if self.output_r is not None:
+                    output_r = tensor2im(self.output_r).astype(np.uint8)
+                    Image.fromarray(output_r).save(join(savedir, name, '{}_reflection.png'.format(self.opt.name)))
 
 
 class ERRNetModel(ERRNetBase):
@@ -209,17 +282,26 @@ class ERRNetModel(ERRNetBase):
 
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
-        self.device = torch.device("cuda:%d" % self.gpu_ids[0] if len(self.gpu_ids) > 0 else "cpu")
+        self.device = torch.device(
+            "cuda:%d" % opt.local_rank
+            if getattr(opt, 'distributed', False)
+            else ("cuda:%d" % self.gpu_ids[0] if len(self.gpu_ids) > 0 else "cpu")
+        )
 
         in_channels = 3
         self.vgg = None
         
         if opt.hyper:
-            self.vgg = losses.Vgg19(requires_grad=False).to(self.device)
+            self.vgg = _wrap_parallel(losses.Vgg19(requires_grad=False).to(self.device), opt)
             in_channels += 1472
         
-        self.net_i = arch.__dict__[self.opt.inet](in_channels, 3).to(self.device)
+        self.net_i = arch.__dict__[self.opt.inet](
+            in_channels, 3,
+            attention_type=getattr(opt, 'attention_type', None),
+            reflection_residual_head=getattr(opt, 'reflection_residual_head', False),
+        ).to(self.device)
         networks.init_weights(self.net_i, init_type=opt.init_type) # using default initialization as EDSR
+        self.net_i = _wrap_parallel(self.net_i, opt)
         self.edge_map = EdgeMap(scale=1).to(self.device)
 
         if self.isTrain:
@@ -228,6 +310,18 @@ class ERRNetModel(ERRNetBase):
             vggloss = losses.ContentLoss()
             vggloss.initialize(losses.VGGLoss(self.vgg))
             self.loss_dic['t_vgg'] = vggloss
+            if getattr(opt, 'reflection_residual_head', False):
+                reflection_loss = losses.ContentLoss()
+                reflection_loss.initialize(nn.L1Loss())
+                self.loss_dic['r_recon'] = reflection_loss
+
+                composition_loss = losses.ContentLoss()
+                composition_loss.initialize(nn.L1Loss())
+                self.loss_dic['composition'] = composition_loss
+            if getattr(opt, 'lambda_laplacian', 0.0) > 0:
+                laplacian_loss = losses.ContentLoss()
+                laplacian_loss.initialize(losses.LaplacianLoss())
+                self.loss_dic['laplacian'] = laplacian_loss
             if getattr(opt, 'lambda_exclusion', 0.0) > 0:
                 exclusion_loss = losses.ContentLoss()
                 exclusion_loss.initialize(losses.ExclusionLoss())
@@ -249,7 +343,7 @@ class ERRNetModel(ERRNetBase):
 
             # Define discriminator
             # if self.opt.lambda_gan > 0:
-            self.netD = networks.define_D(opt, 3)
+            self.netD = _wrap_parallel(networks.define_D(opt, 3), opt)
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(),
                                             lr=opt.lr, betas=(0.9, 0.999))
             self._init_optimizer([self.optimizer_D])
@@ -263,7 +357,7 @@ class ERRNetModel(ERRNetBase):
         if opt.resume:
             self.load(self, opt.resume_epoch)
         
-        if opt.no_verbose is False:
+        if opt.no_verbose is False and getattr(opt, 'rank', 0) == 0:
             self.print_network()
 
     def backward_D(self):
@@ -285,7 +379,12 @@ class ERRNetModel(ERRNetBase):
         self.loss_icnn_pixel = None
         self.loss_icnn_vgg = None
         self.loss_G_GAN = None
+        self.loss_laplacian = None
         self.loss_exclusion = None
+        self.loss_reflection = None
+        self.loss_composition = None
+        if self.output_r is not None:
+            self.loss_G = self.loss_G + self.output_r.sum()*0.0
 
         if self.opt.lambda_gan > 0:
             self.loss_G_GAN = self.loss_dic['gan'].get_g_loss(
@@ -300,6 +399,25 @@ class ERRNetModel(ERRNetBase):
                 self.output_i, self.target_t)
 
             self.loss_G += self.loss_icnn_pixel+self.loss_icnn_vgg*self.opt.lambda_vgg
+
+            lambda_laplacian = getattr(self.opt, 'lambda_laplacian', 0.0)
+            if lambda_laplacian > 0:
+                self.loss_laplacian = self.loss_dic['laplacian'].get_loss(
+                    self.output_i, self.target_t)
+                self.loss_G += self.loss_laplacian*lambda_laplacian
+
+            lambda_reflection = getattr(self.opt, 'lambda_reflection', 0.0)
+            if lambda_reflection > 0 and self.output_r is not None and self.target_r is not None and self.issyn:
+                self.loss_reflection = self.loss_dic['r_recon'].get_loss(
+                    self.output_r, self.target_r)
+                self.loss_G += self.loss_reflection*lambda_reflection
+
+            lambda_composition = getattr(self.opt, 'lambda_composition', 0.0)
+            if lambda_composition > 0 and self.output_r is not None:
+                composition_alpha = getattr(self.opt, 'composition_alpha', 1.0)
+                self.loss_composition = self.loss_dic['composition'].get_loss(
+                    self.output_i + self.output_r*composition_alpha, self.input)
+                self.loss_G += self.loss_composition*lambda_composition
         else:
             self.loss_CX = self.loss_dic['t_cx'].get_loss(self.output_i, self.target_t)
             
@@ -325,9 +443,15 @@ class ERRNetModel(ERRNetBase):
             input_i.extend(hypercolumn)
             input_i = torch.cat(input_i, dim=1)
 
-        output_i = self.net_i(input_i)
+        output = self.net_i(input_i)
+        output_r = None
+        if isinstance(output, (tuple, list)):
+            output_i, output_r = output
+        else:
+            output_i = output
 
         self.output_i = output_i
+        self.output_r = output_r
 
         return output_i
         
@@ -357,8 +481,14 @@ class ERRNetModel(ERRNetBase):
 
         if self.loss_CX is not None:
             ret_errors['CX'] = self.loss_CX.item()
+        if self.loss_laplacian is not None:
+            ret_errors['Lap'] = self.loss_laplacian.item()
         if self.loss_exclusion is not None:
             ret_errors['Excl'] = self.loss_exclusion.item()
+        if self.loss_reflection is not None:
+            ret_errors['RPixel'] = self.loss_reflection.item()
+        if self.loss_composition is not None:
+            ret_errors['Comp'] = self.loss_composition.item()
 
         return ret_errors
 
@@ -368,6 +498,10 @@ class ERRNetModel(ERRNetBase):
         ret_visuals['output_i'] = tensor2im(self.output_i).astype(np.uint8)        
         ret_visuals['target'] = tensor2im(self.target_t).astype(np.uint8)
         ret_visuals['residual'] = tensor2im((self.input - self.output_i)).astype(np.uint8)
+        if self.output_r is not None:
+            ret_visuals['output_r'] = tensor2im(self.output_r).astype(np.uint8)
+        if self.target_r is not None:
+            ret_visuals['target_r'] = tensor2im(self.target_r).astype(np.uint8)
 
         return ret_visuals       
 
@@ -381,12 +515,12 @@ class ERRNetModel(ERRNetBase):
             state_dict = _torch_load_compat(model_path)
             model.epoch = state_dict['epoch']
             model.iterations = state_dict['iterations']
-            model.net_i.load_state_dict(state_dict['icnn'])
+            _load_module_state_dict(model.net_i, state_dict['icnn'])
             if model.isTrain:
                 model.optimizer_G.load_state_dict(state_dict['opt_g'])
         else:
             state_dict = _torch_load_compat(icnn_path, map_location=torch.device('cpu'))
-            model.net_i.load_state_dict(state_dict['icnn'])
+            _load_module_state_dict(model.net_i, state_dict['icnn'])
             model.epoch = state_dict['epoch']
             model.iterations = state_dict['iterations']
             # if model.isTrain:
@@ -395,7 +529,7 @@ class ERRNetModel(ERRNetBase):
         if model.isTrain:
             if 'netD' in state_dict:
                 print('Resume netD ...')
-                model.netD.load_state_dict(state_dict['netD'])
+                _load_module_state_dict(model.netD, state_dict['netD'])
                 model.optimizer_D.load_state_dict(state_dict['opt_d'])
             
         print('Resume from epoch %d, iteration %d' % (model.epoch, model.iterations))
@@ -403,7 +537,7 @@ class ERRNetModel(ERRNetBase):
 
     def state_dict(self):
         state_dict = {
-            'icnn': self.net_i.state_dict(),
+            'icnn': _module_state_dict(self.net_i),
             'opt_g': self.optimizer_G.state_dict(), 
             'epoch': self.epoch, 'iterations': self.iterations
         }
@@ -411,7 +545,7 @@ class ERRNetModel(ERRNetBase):
         if self.opt.lambda_gan > 0:
             state_dict.update({
                 'opt_d': self.optimizer_D.state_dict(),
-                'netD': self.netD.state_dict(),
+                'netD': _module_state_dict(self.netD),
             })
 
         return state_dict
@@ -436,17 +570,25 @@ class NetworkWrapper(ERRNetBase):
 
     def initialize(self, opt, net):
         BaseModel.initialize(self, opt)
-        self.device = torch.device("cuda:%d" % self.gpu_ids[0] if len(self.gpu_ids) > 0 else "cpu")
-        self.net = net.to(self.device)
+        self.device = torch.device(
+            "cuda:%d" % opt.local_rank
+            if getattr(opt, 'distributed', False)
+            else ("cuda:%d" % self.gpu_ids[0] if len(self.gpu_ids) > 0 else "cpu")
+        )
+        self.net = _wrap_parallel(net.to(self.device), opt)
         self.edge_map = EdgeMap(scale=1).to(self.device)
         
         if self.isTrain:
             # define loss functions
-            self.vgg = losses.Vgg19(requires_grad=False).to(self.device)
+            self.vgg = _wrap_parallel(losses.Vgg19(requires_grad=False).to(self.device), opt)
             self.loss_dic = losses.init_loss(opt, self.Tensor)
             vggloss = losses.ContentLoss()
             vggloss.initialize(losses.VGGLoss(self.vgg))
             self.loss_dic['t_vgg'] = vggloss
+            if getattr(opt, 'lambda_laplacian', 0.0) > 0:
+                laplacian_loss = losses.ContentLoss()
+                laplacian_loss.initialize(losses.LaplacianLoss())
+                self.loss_dic['laplacian'] = laplacian_loss
             if getattr(opt, 'lambda_exclusion', 0.0) > 0:
                 exclusion_loss = losses.ContentLoss()
                 exclusion_loss.initialize(losses.ExclusionLoss())
@@ -475,12 +617,12 @@ class NetworkWrapper(ERRNetBase):
 
             # define discriminator
             # if self.opt.lambda_gan > 0:
-            self.netD = networks.define_D(opt, 3)
+            self.netD = _wrap_parallel(networks.define_D(opt, 3), opt)
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(),
                                             lr=opt.lr, betas=(opt.beta1, 0.999))
             self._init_optimizer([self.optimizer_D])
         
-        if opt.no_verbose is False:
+        if opt.no_verbose is False and getattr(opt, 'rank', 0) == 0:
             self.print_network()
 
     def backward_D(self):
@@ -501,6 +643,7 @@ class NetworkWrapper(ERRNetBase):
         self.loss_icnn_pixel = None
         self.loss_icnn_vgg = None
         self.loss_G_GAN = None
+        self.loss_laplacian = None
         self.loss_exclusion = None
 
         if self.opt.lambda_gan > 0:
@@ -518,6 +661,12 @@ class NetworkWrapper(ERRNetBase):
             # self.loss_G += self.loss_icnn_pixel
             self.loss_G += self.loss_icnn_pixel+self.loss_icnn_vgg*self.opt.lambda_vgg
             # self.loss_G += self.loss_fm * self.opt.lambda_vgg
+
+            lambda_laplacian = getattr(self.opt, 'lambda_laplacian', 0.0)
+            if lambda_laplacian > 0:
+                self.loss_laplacian = self.loss_dic['laplacian'].get_loss(
+                    self.output_i, self.target_t)
+                self.loss_G += self.loss_laplacian*lambda_laplacian
         else:
             self.loss_CX = self.loss_dic['t_cx'].get_loss(self.output_i, self.target_t)
             
@@ -558,6 +707,8 @@ class NetworkWrapper(ERRNetBase):
             ret_errors['D'] = self.loss_D.item()
         if self.loss_CX is not None:
             ret_errors['CX'] = self.loss_CX.item()
+        if self.loss_laplacian is not None:
+            ret_errors['Lap'] = self.loss_laplacian.item()
         if self.loss_exclusion is not None:
             ret_errors['Excl'] = self.loss_exclusion.item()
 
@@ -572,5 +723,5 @@ class NetworkWrapper(ERRNetBase):
         return ret_visuals
 
     def state_dict(self):
-        state_dict = self.net.state_dict()
+        state_dict = _module_state_dict(self.net)
         return state_dict

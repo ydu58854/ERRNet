@@ -28,11 +28,12 @@ class PyramidPooling(nn.Module):
 class SELayer(nn.Module):
     def __init__(self, channel, reduction=16):
         super(SELayer, self).__init__()
+        hidden = max(1, channel // reduction)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Sequential(
-                nn.Linear(channel, channel // reduction),
+                nn.Linear(channel, hidden),
                 nn.ReLU(inplace=True),
-                nn.Linear(channel // reduction, channel),
+                nn.Linear(hidden, channel),
                 nn.Sigmoid()
         )
 
@@ -42,16 +43,101 @@ class SELayer(nn.Module):
         y = self.fc(y).view(b, c, 1, 1)
         
         return x * y        
-     
+
+
+class ChannelAttention(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super(ChannelAttention, self).__init__()
+        hidden = max(1, channel // reduction)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+        self.fc = nn.Sequential(
+                nn.Linear(channel, hidden),
+                nn.ReLU(inplace=True),
+                nn.Linear(hidden, channel)
+        )
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        avg_y = self.fc(self.avg_pool(x).view(b, c))
+        max_y = self.fc(self.max_pool(x).view(b, c))
+        y = self.sigmoid(avg_y + max_y).view(b, c, 1, 1)
+
+        return x * y
+
+
+class SpatialAttention(nn.Module):
+    def __init__(self, kernel_size=7):
+        super(SpatialAttention, self).__init__()
+        if kernel_size % 2 == 0:
+            raise ValueError('spatial attention kernel_size must be odd')
+        padding = kernel_size // 2
+        self.conv = nn.Conv2d(2, 1, kernel_size=kernel_size, padding=padding, bias=False)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        avg_y = torch.mean(x, dim=1, keepdim=True)
+        max_y, _ = torch.max(x, dim=1, keepdim=True)
+        y = torch.cat([avg_y, max_y], dim=1)
+        y = self.sigmoid(self.conv(y))
+
+        return x * y
+
+
+class IdentitySpatialAttention(nn.Module):
+    def __init__(self, kernel_size=7):
+        super(IdentitySpatialAttention, self).__init__()
+        if kernel_size % 2 == 0:
+            raise ValueError('spatial attention kernel_size must be odd')
+        self.padding = kernel_size // 2
+        self.weight = nn.Parameter(torch.zeros(1, 2, kernel_size, kernel_size))
+
+    def forward(self, x):
+        avg_y = torch.mean(x, dim=1, keepdim=True)
+        max_y, _ = torch.max(x, dim=1, keepdim=True)
+        y = torch.cat([avg_y, max_y], dim=1)
+        y = 2.0 * torch.sigmoid(F.conv2d(y, self.weight, padding=self.padding))
+
+        return x * y
+
+
+class CBAMLayer(nn.Module):
+    def __init__(self, channel, reduction=16, spatial_kernel_size=7):
+        super(CBAMLayer, self).__init__()
+        self.channel_attention = ChannelAttention(channel, reduction)
+        self.spatial_attention = SpatialAttention(spatial_kernel_size)
+
+    def forward(self, x):
+        x = self.channel_attention(x)
+        x = self.spatial_attention(x)
+
+        return x
+
+
+class SEIdentitySpatialLayer(nn.Module):
+    def __init__(self, channel, reduction=16, spatial_kernel_size=7):
+        super(SEIdentitySpatialLayer, self).__init__()
+        self.channel_attention = SELayer(channel, reduction)
+        self.spatial_attention = IdentitySpatialAttention(spatial_kernel_size)
+
+    def forward(self, x):
+        x = self.channel_attention(x)
+        x = self.spatial_attention(x)
+
+        return x
+
 
 class DRNet(torch.nn.Module):
     def __init__(self, in_channels, out_channels, n_feats, n_resblocks, norm=nn.BatchNorm2d, 
-    se_reduction=None, res_scale=1, bottom_kernel_size=3, pyramid=False):
+    se_reduction=None, res_scale=1, bottom_kernel_size=3, pyramid=False, attention_type=None,
+    reflection_residual_head=False):
         super(DRNet, self).__init__()
         # Initial convolution layers
         conv = nn.Conv2d
         deconv = nn.ConvTranspose2d
         act = nn.ReLU(True)
+        self.reflection_residual_head = reflection_residual_head
         
         self.pyramid_module = None
         self.conv1 = ConvLayer(conv, in_channels, n_feats, kernel_size=bottom_kernel_size, stride=1, norm=None, act=act)
@@ -63,7 +149,7 @@ class DRNet(torch.nn.Module):
 
         self.res_module = nn.Sequential(*[ResidualBlock(
             n_feats, dilation=dilation_config[i], norm=norm, act=act, 
-            se_reduction=se_reduction, res_scale=res_scale) for i in range(n_resblocks)])
+            se_reduction=se_reduction, res_scale=res_scale, attention_type=attention_type) for i in range(n_resblocks)])
 
         # Upsampling Layers
         self.deconv1 = ConvLayer(deconv, n_feats, n_feats, kernel_size=4, stride=2, padding=1, norm=norm, act=act)
@@ -75,6 +161,9 @@ class DRNet(torch.nn.Module):
             self.deconv2 = ConvLayer(conv, n_feats, n_feats, kernel_size=3, stride=1, norm=norm, act=act)
             self.pyramid_module = PyramidPooling(n_feats, n_feats, scales=(4,8,16,32), ct_channels=n_feats//4)
             self.deconv3 = ConvLayer(conv, n_feats, out_channels, kernel_size=1, stride=1, norm=None, act=act)
+        self.reflection_head = None
+        if self.reflection_residual_head:
+            self.reflection_head = ConvLayer(conv, n_feats, out_channels, kernel_size=1, stride=1, norm=None, act=act)
         
     def forward(self, x):
         x = self.conv1(x)
@@ -86,9 +175,13 @@ class DRNet(torch.nn.Module):
         x = self.deconv2(x)
         if self.pyramid_module is not None:
             x = self.pyramid_module(x)
-        x = self.deconv3(x)
+        output_t = self.deconv3(x)
 
-        return x
+        if self.reflection_head is None:
+            return output_t
+
+        output_r = self.reflection_head(x)
+        return output_t, output_r
 
 
 class ConvLayer(torch.nn.Sequential):
@@ -105,15 +198,27 @@ class ConvLayer(torch.nn.Sequential):
 
 
 class ResidualBlock(torch.nn.Module):
-    def __init__(self, channels, dilation=1, norm=nn.BatchNorm2d, act=nn.ReLU(True), se_reduction=None, res_scale=1):
+    def __init__(self, channels, dilation=1, norm=nn.BatchNorm2d, act=nn.ReLU(True), se_reduction=None, res_scale=1, attention_type=None):
         super(ResidualBlock, self).__init__()
         conv = nn.Conv2d
         self.conv1 = ConvLayer(conv, channels, channels, kernel_size=3, stride=1, dilation=dilation, norm=norm, act=act)
         self.conv2 = ConvLayer(conv, channels, channels, kernel_size=3, stride=1, dilation=dilation, norm=norm, act=None)
         self.se_layer = None
+        self.cbam_layer = None
+        self.se_identity_spatial_layer = None
         self.res_scale = res_scale
-        if se_reduction is not None:
-            self.se_layer = SELayer(channels, se_reduction)
+        self.attention_type = attention_type
+        if self.attention_type is None:
+            self.attention_type = 'se' if se_reduction is not None else 'none'
+        if self.attention_type not in ('none', 'se', 'cbam', 'cbam_identity'):
+            raise ValueError('unsupported attention_type: {}'.format(self.attention_type))
+        attention_reduction = se_reduction or 16
+        if self.attention_type == 'se':
+            self.se_layer = SELayer(channels, attention_reduction)
+        elif self.attention_type == 'cbam':
+            self.cbam_layer = CBAMLayer(channels, attention_reduction)
+        elif self.attention_type == 'cbam_identity':
+            self.se_identity_spatial_layer = SEIdentitySpatialLayer(channels, attention_reduction)
 
     def forward(self, x):
         residual = x
@@ -121,9 +226,13 @@ class ResidualBlock(torch.nn.Module):
         out = self.conv2(out)
         if self.se_layer:
             out = self.se_layer(out)
+        if self.cbam_layer:
+            out = self.cbam_layer(out)
+        if self.se_identity_spatial_layer:
+            out = self.se_identity_spatial_layer(out)
         out = out * self.res_scale
         out = out + residual
         return out
 
     def extra_repr(self):
-        return 'res_scale={}'.format(self.res_scale)
+        return 'res_scale={}, attention_type={}'.format(self.res_scale, self.attention_type)

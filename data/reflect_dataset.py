@@ -100,7 +100,14 @@ BaseDataset = torchdata.Dataset
 
 class DataLoader(torch.utils.data.DataLoader):
     def __init__(self, dataset, batch_size, shuffle, *args, **kwargs):
-        super(DataLoader, self).__init__(dataset, batch_size, shuffle, *args, **kwargs)
+        sampler = kwargs.get('sampler', None)
+        super(DataLoader, self).__init__(
+            dataset,
+            batch_size,
+            shuffle if sampler is None else False,
+            *args,
+            **kwargs
+        )
         self.shuffle = shuffle
 
     def reset(self):

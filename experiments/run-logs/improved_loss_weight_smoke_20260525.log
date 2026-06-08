@@ -1,407 +1,0 @@
-stty: 'standard input': Inappropriate ioctl for device
------------- Options -------------
-batchSize: 1
-checkpoints_dir: ./checkpoints
-debug: False
-display_freq: 100
-display_id: 0
-display_port: 8097
-display_single_pane_ncols: 0
-display_winsize: 256
-fineSize: 224,224
-gan_type: rasgan
-gpu_ids: [0]
-gradient_loss_weight: 0.4
-high_gamma: 1.3
-high_sigma: 5
-hyper: True
-icnn_path: checkpoints/errnet/errnet_060_00463920.pt
-inet: errnet
-init_type: edsr
-isTrain: True
-lambda_gan: 0.01
-lambda_vgg: 0.1
-loadSize: 224,336,448
-low_gamma: 1.3
-low_sigma: 2
-lr: 0.0001
-max_dataset_size: None
-model: errnet_model
-nEpochs: 60
-nThreads: 0
-name: errnet_loss_weight_smoke
-no_flip: False
-no_html: False
-no_log: False
-no_verbose: False
-pixel_loss_weight: 0.2
-print_freq: 100
-resize_or_crop: resize_and_crop
-resume: True
-resume_epoch: None
-save_epoch_freq: 10
-seed: 2018
-serial_batches: False
-unaligned_loss: vgg
-update_html_freq: 1000
-vgg_layer: 31
-wd: 0
-which_model_D: disc_vgg
--------------- End ----------------
-[i] reflection sythesis model: {'kernel_sizes': [11], 'low_sigma': 2, 'high_sigma': 5, 'low_gamma': 1.3, 'high_gamma': 1.3}
-[i] using a fusion dataset: 7732 [7643, 89] imgs fused with ratio [0.7, 0.3]
-[i] initialization method [edsr]
-[i] initialization method [kaiming]
-Resume netD ...
-Resume from epoch 60, iteration 463920
---------------------- Model ---------------------
-##################### NetG #####################
-DRNet(
-  (conv1): ConvLayer(
-    (conv2d): Conv2d(1475, 256, kernel_size=(1, 1), stride=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-  (conv2): ConvLayer(
-    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-  (conv3): ConvLayer(
-    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-  (res_module): Sequential(
-    (0): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (1): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (2): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (3): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (4): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (5): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (6): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (7): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (8): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (9): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (10): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (11): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-    (12): ResidualBlock(
-      res_scale=0.1
-      (conv1): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (act): ReLU(inplace=True)
-      )
-      (conv2): ConvLayer(
-        (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      )
-      (se_layer): SELayer(
-        (avg_pool): AdaptiveAvgPool2d(output_size=1)
-        (fc): Sequential(
-          (0): Linear(in_features=256, out_features=32, bias=True)
-          (1): ReLU(inplace=True)
-          (2): Linear(in_features=32, out_features=256, bias=True)
-          (3): Sigmoid()
-        )
-      )
-    )
-  )
-  (deconv1): ConvLayer(
-    (conv2d): ConvTranspose2d(256, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-  (deconv2): ConvLayer(
-    (conv2d): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-  (pyramid_module): PyramidPooling(
-    (stages): ModuleList(
-      (0): Sequential(
-        (0): AvgPool2d(kernel_size=(4, 4), stride=(4, 4), padding=0)
-        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
-        (2): LeakyReLU(negative_slope=0.2, inplace=True)
-      )
-      (1): Sequential(
-        (0): AvgPool2d(kernel_size=(8, 8), stride=(8, 8), padding=0)
-        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
-        (2): LeakyReLU(negative_slope=0.2, inplace=True)
-      )
-      (2): Sequential(
-        (0): AvgPool2d(kernel_size=(16, 16), stride=(16, 16), padding=0)
-        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
-        (2): LeakyReLU(negative_slope=0.2, inplace=True)
-      )
-      (3): Sequential(
-        (0): AvgPool2d(kernel_size=(32, 32), stride=(32, 32), padding=0)
-        (1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
-        (2): LeakyReLU(negative_slope=0.2, inplace=True)
-      )
-    )
-    (bottleneck): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
-    (relu): LeakyReLU(negative_slope=0.2, inplace=True)
-  )
-  (deconv3): ConvLayer(
-    (conv2d): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
-    (act): ReLU(inplace=True)
-  )
-)
-Total number of parameters: 18953379
-The size of receptive field: 113
-##################### NetD #####################
-Discriminator_VGG(
-  (body): Sequential(
-    (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (1): LeakyReLU(negative_slope=0.2)
-    (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (3): GroupNorm(32, 64, eps=1e-05, affine=True)
-    (4): LeakyReLU(negative_slope=0.2)
-    (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (6): GroupNorm(32, 128, eps=1e-05, affine=True)
-    (7): LeakyReLU(negative_slope=0.2)
-    (8): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (9): GroupNorm(32, 128, eps=1e-05, affine=True)
-    (10): LeakyReLU(negative_slope=0.2)
-    (11): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (12): GroupNorm(32, 256, eps=1e-05, affine=True)
-    (13): LeakyReLU(negative_slope=0.2)
-    (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (15): GroupNorm(32, 256, eps=1e-05, affine=True)
-    (16): LeakyReLU(negative_slope=0.2)
-    (17): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (18): GroupNorm(32, 512, eps=1e-05, affine=True)
-    (19): LeakyReLU(negative_slope=0.2)
-    (20): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (21): GroupNorm(32, 512, eps=1e-05, affine=True)
-    (22): LeakyReLU(negative_slope=0.2)
-    (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (24): GroupNorm(32, 512, eps=1e-05, affine=True)
-    (25): LeakyReLU(negative_slope=0.2)
-    (26): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (27): GroupNorm(32, 512, eps=1e-05, affine=True)
-    (28): LeakyReLU(negative_slope=0.2)
-  )
-  (tail): Sequential(
-    (0): AdaptiveAvgPool2d(output_size=1)
-    (1): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1))
-    (2): LeakyReLU(negative_slope=0.2)
-    (3): Conv2d(1024, 1, kernel_size=(1, 1), stride=(1, 1))
-  )
-)
-Total number of parameters: 9937089
-The size of receptive field: 125
-create web directory ./checkpoints/errnet_loss_weight_smoke/web...
- [>................................................................]  Step: 6s38ms | Tot: 0ms | LMSE: 0.0020 | NCC: 0.9957 | PSNR: 29.6903 | SSIM: 0.9771 |  1/100  [>................................................................]  Step: 76ms | Tot: 76ms | LMSE: 0.0015 | NCC: 0.9945 | PSNR: 31.7198 | SSIM: 0.9782 |  2/100  [=>...............................................................]  Step: 71ms | Tot: 148ms | LMSE: 0.0029 | NCC: 0.9928 | PSNR: 30.6984 | SSIM: 0.9703 |  3/100  [=>...............................................................]  Step: 71ms | Tot: 219ms | LMSE: 0.0026 | NCC: 0.9918 | PSNR: 29.9695 | SSIM: 0.9688 |  4/100  [==>..............................................................]  Step: 71ms | Tot: 291ms | LMSE: 0.0026 | NCC: 0.9914 | PSNR: 29.7033 | SSIM: 0.9627 |  5/100  [===>.............................................................]  Step: 70ms | Tot: 362ms | LMSE: 0.0060 | NCC: 0.9857 | PSNR: 28.5922 | SSIM: 0.9484 |  6/100  [===>.............................................................]  Step: 74ms | Tot: 436ms | LMSE: 0.0061 | NCC: 0.9845 | PSNR: 28.4282 | SSIM: 0.9241 |  7/100  [====>............................................................]  Step: 78ms | Tot: 515ms | LMSE: 0.0060 | NCC: 0.9849 | PSNR: 28.3601 | SSIM: 0.9251 |  8/100  [=====>...........................................................]  Step: 70ms | Tot: 586ms | LMSE: 0.0054 | NCC: 0.9861 | PSNR: 28.6119 | SSIM: 0.9290 |  9/100  [=====>...........................................................]  Step: 71ms | Tot: 657ms | LMSE: 0.0051 | NCC: 0.9861 | PSNR: 28.5494 | SSIM: 0.9316 |  10/100  [======>..........................................................]  Step: 71ms | Tot: 728ms | LMSE: 0.0056 | NCC: 0.9853 | PSNR: 28.2599 | SSIM: 0.9328 |  11/100  [=======>.........................................................]  Step: 71ms | Tot: 800ms | LMSE: 0.0060 | NCC: 0.9845 | PSNR: 28.1690 | SSIM: 0.9324 |  12/100  [=======>.........................................................]  Step: 71ms | Tot: 871ms | LMSE: 0.0058 | NCC: 0.9854 | PSNR: 28.4326 | SSIM: 0.9303 |  13/100  [========>........................................................]  Step: 73ms | Tot: 945ms | LMSE: 0.0058 | NCC: 0.9838 | PSNR: 28.1550 | SSIM: 0.9273 |  14/100  [=========>.......................................................]  Step: 70ms | Tot: 1s16ms | LMSE: 0.0058 | NCC: 0.9832 | PSNR: 28.0681 | SSIM: 0.9285 |  15/100  [=========>.......................................................]  Step: 71ms | Tot: 1s87ms | LMSE: 0.0056 | NCC: 0.9839 | PSNR: 28.2851 | SSIM: 0.9307 |  16/100  [==========>......................................................]  Step: 70ms | Tot: 1s157ms | LMSE: 0.0054 | NCC: 0.9841 | PSNR: 28.2944 | SSIM: 0.9324 |  17/100  [===========>.....................................................]  Step: 71ms | Tot: 1s229ms | LMSE: 0.0056 | NCC: 0.9836 | PSNR: 28.0465 | SSIM: 0.9326 |  18/100  [===========>.....................................................]  Step: 70ms | Tot: 1s300ms | LMSE: 0.0054 | NCC: 0.9832 | PSNR: 27.9727 | SSIM: 0.9295 |  19/100  [============>....................................................]  Step: 71ms | Tot: 1s371ms | LMSE: 0.0053 | NCC: 0.9833 | PSNR: 27.9880 | SSIM: 0.9302 |  20/100  [=============>...................................................]  Step: 70ms | Tot: 1s442ms | LMSE: 0.0051 | NCC: 0.9840 | PSNR: 28.1695 | SSIM: 0.9316 |  21/100  [=============>...................................................]  Step: 71ms | Tot: 1s514ms | LMSE: 0.0050 | NCC: 0.9844 | PSNR: 28.2107 | SSIM: 0.9332 |  22/100  [==============>..................................................]  Step: 71ms | Tot: 1s585ms | LMSE: 0.0051 | NCC: 0.9844 | PSNR: 28.1396 | SSIM: 0.9335 |  23/100  [==============>..................................................]  Step: 70ms | Tot: 1s656ms | LMSE: 0.0053 | NCC: 0.9837 | PSNR: 28.0422 | SSIM: 0.9333 |  24/100  [===============>.................................................]  Step: 71ms | Tot: 1s728ms | LMSE: 0.0051 | NCC: 0.9842 | PSNR: 28.1865 | SSIM: 0.9343 |  25/100  [================>................................................]  Step: 73ms | Tot: 1s801ms | LMSE: 0.0056 | NCC: 0.9832 | PSNR: 27.9792 | SSIM: 0.9338 |  26/100  [================>................................................]  Step: 72ms | Tot: 1s874ms | LMSE: 0.0060 | NCC: 0.9814 | PSNR: 27.8029 | SSIM: 0.9311 |  27/100  [=================>...............................................]  Step: 75ms | Tot: 1s950ms | LMSE: 0.0058 | NCC: 0.9817 | PSNR: 27.8288 | SSIM: 0.9287 |  28/100  [==================>..............................................]  Step: 72ms | Tot: 2s23ms | LMSE: 0.0056 | NCC: 0.9821 | PSNR: 28.0998 | SSIM: 0.9305 |  29/100  [==================>..............................................]  Step: 71ms | Tot: 2s94ms | LMSE: 0.0063 | NCC: 0.9817 | PSNR: 27.9100 | SSIM: 0.9300 |  30/100  [===================>.............................................]  Step: 71ms | Tot: 2s166ms | LMSE: 0.0062 | NCC: 0.9821 | PSNR: 28.1022 | SSIM: 0.9320 |  31/100  [====================>............................................]  Step: 75ms | Tot: 2s241ms | LMSE: 0.0063 | NCC: 0.9820 | PSNR: 28.0277 | SSIM: 0.9326 |  32/100  [====================>............................................]  Step: 72ms | Tot: 2s313ms | LMSE: 0.0061 | NCC: 0.9820 | PSNR: 27.9902 | SSIM: 0.9325 |  33/100  [=====================>...........................................]  Step: 73ms | Tot: 2s386ms | LMSE: 0.0062 | NCC: 0.9815 | PSNR: 27.9648 | SSIM: 0.9307 |  34/100  [======================>..........................................]  Step: 71ms | Tot: 2s458ms | LMSE: 0.0061 | NCC: 0.9818 | PSNR: 28.0414 | SSIM: 0.9305 |  35/100  [======================>..........................................]  Step: 71ms | Tot: 2s530ms | LMSE: 0.0059 | NCC: 0.9820 | PSNR: 27.9894 | SSIM: 0.9305 |  36/100  [=======================>.........................................]  Step: 73ms | Tot: 2s604ms | LMSE: 0.0058 | NCC: 0.9822 | PSNR: 27.9808 | SSIM: 0.9304 |  37/100  [========================>........................................]  Step: 72ms | Tot: 2s676ms | LMSE: 0.0058 | NCC: 0.9822 | PSNR: 28.0655 | SSIM: 0.9306 |  38/100  [========================>........................................]  Step: 71ms | Tot: 2s748ms | LMSE: 0.0057 | NCC: 0.9825 | PSNR: 28.0921 | SSIM: 0.9312 |  39/100  [=========================>.......................................]  Step: 74ms | Tot: 2s823ms | LMSE: 0.0057 | NCC: 0.9825 | PSNR: 28.1135 | SSIM: 0.9320 |  40/100  [==========================>......................................]  Step: 73ms | Tot: 2s896ms | LMSE: 0.0057 | NCC: 0.9823 | PSNR: 27.9943 | SSIM: 0.9322 |  41/100  [==========================>......................................]  Step: 72ms | Tot: 2s969ms | LMSE: 0.0057 | NCC: 0.9824 | PSNR: 27.9527 | SSIM: 0.9322 |  42/100  [===========================>.....................................]  Step: 74ms | Tot: 3s44ms | LMSE: 0.0056 | NCC: 0.9827 | PSNR: 28.0237 | SSIM: 0.9328 |  43/100  [===========================>.....................................]  Step: 72ms | Tot: 3s116ms | LMSE: 0.0055 | NCC: 0.9816 | PSNR: 28.0179 | SSIM: 0.9329 |  44/100  [============================>....................................]  Step: 72ms | Tot: 3s189ms | LMSE: 0.0055 | NCC: 0.9814 | PSNR: 27.9331 | SSIM: 0.9319 |  45/100  [=============================>...................................]  Step: 77ms | Tot: 3s266ms | LMSE: 0.0054 | NCC: 0.9817 | PSNR: 27.9763 | SSIM: 0.9326 |  46/100  [=============================>...................................]  Step: 72ms | Tot: 3s339ms | LMSE: 0.0054 | NCC: 0.9818 | PSNR: 27.9557 | SSIM: 0.9333 |  47/100  [==============================>..................................]  Step: 71ms | Tot: 3s411ms | LMSE: 0.0053 | NCC: 0.9817 | PSNR: 27.9555 | SSIM: 0.9341 |  48/100  [===============================>.................................]  Step: 71ms | Tot: 3s482ms | LMSE: 0.0053 | NCC: 0.9818 | PSNR: 27.8714 | SSIM: 0.9345 |  49/100  [===============================>.................................]  Step: 72ms | Tot: 3s554ms | LMSE: 0.0052 | NCC: 0.9820 | PSNR: 28.0068 | SSIM: 0.9354 |  50/100  [================================>................................]  Step: 71ms | Tot: 3s626ms | LMSE: 0.0051 | NCC: 0.9821 | PSNR: 28.0415 | SSIM: 0.9359 |  51/100  [=================================>...............................]  Step: 71ms | Tot: 3s698ms | LMSE: 0.0051 | NCC: 0.9822 | PSNR: 28.0575 | SSIM: 0.9361 |  52/100  [=================================>...............................]  Step: 73ms | Tot: 3s771ms | LMSE: 0.0051 | NCC: 0.9818 | PSNR: 27.9852 | SSIM: 0.9353 |  53/100  [==================================>..............................]  Step: 72ms | Tot: 3s844ms | LMSE: 0.0053 | NCC: 0.9809 | PSNR: 27.8805 | SSIM: 0.9341 |  54/100  [===================================>.............................]  Step: 71ms | Tot: 3s915ms | LMSE: 0.0053 | NCC: 0.9809 | PSNR: 27.8418 | SSIM: 0.9343 |  55/100  [===================================>.............................]  Step: 98ms | Tot: 4s14ms | LMSE: 0.0055 | NCC: 0.9804 | PSNR: 27.7876 | SSIM: 0.9346 |  56/100  [====================================>............................]  Step: 72ms | Tot: 4s86ms | LMSE: 0.0055 | NCC: 0.9800 | PSNR: 27.7067 | SSIM: 0.9345 |  57/100  [=====================================>...........................]  Step: 79ms | Tot: 4s165ms | LMSE: 0.0054 | NCC: 0.9800 | PSNR: 27.7051 | SSIM: 0.9351 |  58/100  [=====================================>...........................]  Step: 73ms | Tot: 4s239ms | LMSE: 0.0054 | NCC: 0.9801 | PSNR: 27.6933 | SSIM: 0.9355 |  59/100  [======================================>..........................]  Step: 88ms | Tot: 4s328ms | LMSE: 0.0054 | NCC: 0.9801 | PSNR: 27.6850 | SSIM: 0.9362 |  60/100  [=======================================>.........................]  Step: 72ms | Tot: 4s401ms | LMSE: 0.0053 | NCC: 0.9803 | PSNR: 27.6845 | SSIM: 0.9362 |  61/100  [=======================================>.........................]  Step: 72ms | Tot: 4s473ms | LMSE: 0.0054 | NCC: 0.9803 | PSNR: 27.6358 | SSIM: 0.9363 |  62/100  [========================================>........................]  Step: 71ms | Tot: 4s545ms | LMSE: 0.0053 | NCC: 0.9806 | PSNR: 27.6859 | SSIM: 0.9370 |  63/100  [========================================>........................]  Step: 71ms | Tot: 4s617ms | LMSE: 0.0053 | NCC: 0.9806 | PSNR: 27.6687 | SSIM: 0.9373 |  64/100  [=========================================>.......................]  Step: 70ms | Tot: 4s687ms | LMSE: 0.0053 | NCC: 0.9807 | PSNR: 27.6866 | SSIM: 0.9376 |  65/100  [==========================================>......................]  Step: 84ms | Tot: 4s772ms | LMSE: 0.0052 | NCC: 0.9809 | PSNR: 27.7051 | SSIM: 0.9381 |  66/100  [==========================================>......................]  Step: 74ms | Tot: 4s846ms | LMSE: 0.0052 | NCC: 0.9809 | PSNR: 27.6777 | SSIM: 0.9373 |  67/100  [===========================================>.....................]  Step: 72ms | Tot: 4s918ms | LMSE: 0.0052 | NCC: 0.9810 | PSNR: 27.6894 | SSIM: 0.9379 |  68/100  [============================================>....................]  Step: 76ms | Tot: 4s995ms | LMSE: 0.0051 | NCC: 0.9807 | PSNR: 27.6590 | SSIM: 0.9381 |  69/100  [============================================>....................]  Step: 72ms | Tot: 5s67ms | LMSE: 0.0051 | NCC: 0.9807 | PSNR: 27.6712 | SSIM: 0.9383 |  70/100  [=============================================>...................]  Step: 72ms | Tot: 5s139ms | LMSE: 0.0051 | NCC: 0.9808 | PSNR: 27.6654 | SSIM: 0.9388 |  71/100  [==============================================>..................]  Step: 74ms | Tot: 5s214ms | LMSE: 0.0050 | NCC: 0.9809 | PSNR: 27.6680 | SSIM: 0.9392 |  72/100  [==============================================>..................]  Step: 72ms | Tot: 5s287ms | LMSE: 0.0050 | NCC: 0.9810 | PSNR: 27.6822 | SSIM: 0.9387 |  73/100  [===============================================>.................]  Step: 79ms | Tot: 5s366ms | LMSE: 0.0050 | NCC: 0.9811 | PSNR: 27.6782 | SSIM: 0.9389 |  74/100  [================================================>................]  Step: 73ms | Tot: 5s439ms | LMSE: 0.0049 | NCC: 0.9813 | PSNR: 27.7253 | SSIM: 0.9394 |  75/100  [================================================>................]  Step: 72ms | Tot: 5s512ms | LMSE: 0.0050 | NCC: 0.9814 | PSNR: 27.7388 | SSIM: 0.9393 |  76/100  [=================================================>...............]  Step: 73ms | Tot: 5s585ms | LMSE: 0.0050 | NCC: 0.9812 | PSNR: 27.7389 | SSIM: 0.9394 |  77/100  [==================================================>..............]  Step: 91ms | Tot: 5s677ms | LMSE: 0.0049 | NCC: 0.9814 | PSNR: 27.7720 | SSIM: 0.9399 |  78/100  [==================================================>..............]  Step: 75ms | Tot: 5s753ms | LMSE: 0.0049 | NCC: 0.9815 | PSNR: 27.8241 | SSIM: 0.9399 |  79/100  [===================================================>.............]  Step: 72ms | Tot: 5s825ms | LMSE: 0.0049 | NCC: 0.9809 | PSNR: 27.7103 | SSIM: 0.9391 |  80/100  [====================================================>............]  Step: 72ms | Tot: 5s898ms | LMSE: 0.0049 | NCC: 0.9811 | PSNR: 27.7420 | SSIM: 0.9393 |  81/100  [====================================================>............]  Step: 72ms | Tot: 5s971ms | LMSE: 0.0048 | NCC: 0.9812 | PSNR: 27.7550 | SSIM: 0.9391 |  82/100  [=====================================================>...........]  Step: 74ms | Tot: 6s45ms | LMSE: 0.0049 | NCC: 0.9809 | PSNR: 27.7810 | SSIM: 0.9391 |  83/100  [=====================================================>...........]  Step: 73ms | Tot: 6s118ms | LMSE: 0.0049 | NCC: 0.9808 | PSNR: 27.7768 | SSIM: 0.9391 |  84/100  [======================================================>..........]  Step: 72ms | Tot: 6s191ms | LMSE: 0.0049 | NCC: 0.9803 | PSNR: 27.7124 | SSIM: 0.9386 |  85/100  [=======================================================>.........]  Step: 73ms | Tot: 6s264ms | LMSE: 0.0049 | NCC: 0.9805 | PSNR: 27.7791 | SSIM: 0.9389 |  86/100  [=======================================================>.........]  Step: 82ms | Tot: 6s347ms | LMSE: 0.0049 | NCC: 0.9804 | PSNR: 27.7878 | SSIM: 0.9391 |  87/100  [========================================================>........]  Step: 78ms | Tot: 6s425ms | LMSE: 0.0049 | NCC: 0.9805 | PSNR: 27.7808 | SSIM: 0.9393 |  88/100  [=========================================================>.......]  Step: 88ms | Tot: 6s514ms | LMSE: 0.0049 | NCC: 0.9806 | PSNR: 27.7957 | SSIM: 0.9395 |  89/100  [=========================================================>.......]  Step: 78ms | Tot: 6s592ms | LMSE: 0.0048 | NCC: 0.9808 | PSNR: 27.8512 | SSIM: 0.9398 |  90/100  [==========================================================>......]  Step: 72ms | Tot: 6s665ms | LMSE: 0.0048 | NCC: 0.9810 | PSNR: 27.8970 | SSIM: 0.9399 |  91/100  [===========================================================>.....]  Step: 72ms | Tot: 6s738ms | LMSE: 0.0048 | NCC: 0.9811 | PSNR: 27.9416 | SSIM: 0.9402 |  92/100  [===========================================================>.....]  Step: 72ms | Tot: 6s811ms | LMSE: 0.0048 | NCC: 0.9811 | PSNR: 27.9279 | SSIM: 0.9400 |  93/100  [============================================================>....]  Step: 71ms | Tot: 6s882ms | LMSE: 0.0048 | NCC: 0.9811 | PSNR: 27.9248 | SSIM: 0.9401 |  94/100  [=============================================================>...]  Step: 74ms | Tot: 6s957ms | LMSE: 0.0049 | NCC: 0.9807 | PSNR: 27.8982 | SSIM: 0.9401 |  95/100  [=============================================================>...]  Step: 70ms | Tot: 7s27ms | LMSE: 0.0048 | NCC: 0.9807 | PSNR: 27.8568 | SSIM: 0.9403 |  96/100  [==============================================================>..]  Step: 72ms | Tot: 7s100ms | LMSE: 0.0049 | NCC: 0.9805 | PSNR: 27.7978 | SSIM: 0.9401 |  97/100  [===============================================================>.]  Step: 71ms | Tot: 7s171ms | LMSE: 0.0049 | NCC: 0.9806 | PSNR: 27.7976 | SSIM: 0.9400 |  98/100  [===============================================================>.]  Step: 70ms | Tot: 7s242ms | LMSE: 0.0049 | NCC: 0.9808 | PSNR: 27.8671 | SSIM: 0.9405 |  99/100  [================================================================>]  Step: 71ms | Tot: 7s313ms | LMSE: 0.0048 | NCC: 0.9808 | PSNR: 27.8770 | SSIM: 0.9407 |  100/100 
-[i] set learning rate to 0.0001
-STATUS improved_loss_weight_smoke status=0

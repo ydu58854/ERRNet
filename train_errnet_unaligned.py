@@ -3,6 +3,7 @@ from options.errnet.train_options import TrainOptions
 from engine import Engine
 from data.image_folder import read_fns
 import torch.backends.cudnn as cudnn
+from torch.utils.data.distributed import DistributedSampler
 import data.reflect_dataset as datasets
 import util.util as util
 import data
@@ -26,10 +27,16 @@ train_dataset_unaligned = datasets.CEILTestDataset(datadir_unaligned, enable_tra
 
 train_dataset_fusion = datasets.FusionDataset([train_dataset, train_dataset_unaligned, train_dataset_real], [0.25,0.5,0.25])
 
+train_sampler = DistributedSampler(
+    train_dataset_fusion,
+    num_replicas=opt.world_size,
+    rank=opt.rank,
+    shuffle=not opt.serial_batches,
+) if getattr(opt, 'distributed', False) else None
 
 train_dataloader_fusion = datasets.DataLoader(
     train_dataset_fusion, batch_size=opt.batchSize, shuffle=not opt.serial_batches, 
-    num_workers=opt.nThreads, pin_memory=True)
+    num_workers=opt.nThreads, pin_memory=True, sampler=train_sampler)
 
 
 engine = Engine(opt)

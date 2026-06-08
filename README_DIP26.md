@@ -85,6 +85,10 @@ ERRNet/
       Dataset/
 ```
 
+The GitHub repository intentionally excludes datasets, checkpoints, generated
+benchmark outputs, custom-image outputs, and run logs. Keep those files locally
+or publish model weights through a separate download link for final submission.
+
 ## 2. Prepare the Training and Testing Data
 
 
@@ -155,6 +159,39 @@ python train_errnet.py --name errnet --hyper
 python train_errnet.py --name errnet_cpu --hyper --gpu_ids -1
 ```
 
+Optional 8-GPU aligned training uses PyTorch DDP with one process per GPU:
+
+```bash
+torchrun --standalone --nproc_per_node=8 train_errnet.py \
+  --name errnet_cbam_identity_10ep_ddp8 \
+  --hyper \
+  --attention_type cbam_identity \
+  --batchSize 1 \
+  --nEpochs 10 \
+  --save_iter_freq 500 \
+  --nThreads 4 \
+  --display_id 0
+```
+
+Under `torchrun`, `batchSize` is per process. The example above gives effective
+batch size `8`, split across eight GPU processes. Only rank `0` writes logs and
+checkpoints. Checkpoints are saved without `module.` prefixes, so single-GPU
+evaluation can still load them when the same architecture flags are used.
+
+For a same-epoch SE-vs-attention control, run the default SE candidate with the
+same DDP settings:
+
+```bash
+torchrun --standalone --nproc_per_node=8 train_errnet.py \
+  --name errnet_se_10ep_ddp8 \
+  --hyper \
+  --batchSize 1 \
+  --nEpochs 10 \
+  --save_iter_freq 500 \
+  --nThreads 4 \
+  --display_id 0
+```
+
 Optional local loss-weight experiment:
 
 ```bash
@@ -174,6 +211,54 @@ python train_errnet.py --name errnet_phaseC_exclusion_smoke --hyper --lambda_exc
 values add a transmission/residual gradient exclusion loss using `input -
 output` as a residual proxy; this does not change the network, loader, metrics,
 or checkpoint schema.
+
+Optional residual-attention / CBAM screening:
+
+```bash
+python train_errnet.py --name errnet_cbam_10ep --hyper --attention_type cbam --nEpochs 10 --save_iter_freq 500 --nThreads 0 --display_id 0
+```
+
+Omitting `--attention_type` preserves the selected architecture default:
+`errnet` keeps its original SE-style channel attention and `basenet` keeps no
+residual-block attention. Passing `--attention_type cbam` replaces the residual
+block attention with channel attention followed by spatial attention; data,
+losses, metrics, and checkpoint wrapper fields stay unchanged. Train and
+evaluate CBAM checkpoints with the same `--attention_type cbam` flag because
+the generator parameters differ from SE checkpoints.
+
+Passing `--attention_type cbam_identity` keeps the original SE channel attention
+and adds an identity-initialized spatial gate. This is the conservative
+attention candidate: at initialization the spatial gate multiplies features by
+`1.0`, then learns deviations during training. Train and evaluate these
+checkpoints with `--attention_type cbam_identity`.
+
+Optional reflection-residual head training, matching the main structural
+variant discussed in the course paper:
+
+```bash
+torchrun --standalone --nproc_per_node=8 train_errnet.py \
+  --name errnet_reflection_residual_lamR005_lamC001_80ep_ddp8 \
+  --hyper \
+  --reflection_residual_head \
+  --train_synthetic_only \
+  --lambda_reflection 0.05 \
+  --lambda_composition 0.01 \
+  --batchSize 1 \
+  --nEpochs 80 \
+  --save_iter_freq 500 \
+  --nThreads 4 \
+  --display_id 0
+```
+
+Evaluate a reflection-residual checkpoint with the same architecture flag:
+
+```bash
+python test_errnet.py --name errnet_reflection_residual_lamR005_lamC001_80ep_ddp8 --dataset [dataset] -r --hyper --reflection_residual_head --icnn_path checkpoints/errnet_reflection_residual_lamR005_lamC001_80ep_ddp8/errnet_080_00076480.pt
+```
+
+`--reflection_residual_head` is off by default. The auxiliary terms are also off
+unless `--lambda_reflection` or `--lambda_composition` is positive, so the
+baseline commands remain compatible.
 
 Optional Phase D data-strategy screening:
 

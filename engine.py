@@ -1,4 +1,5 @@
 import torch
+import torch.distributed as dist
 import util.util as util
 import models
 import time
@@ -20,20 +21,26 @@ class Engine(object):
 
     def __setup(self):
         self.basedir = join('checkpoints', self.opt.name)
-        if not os.path.exists(self.basedir):
+        if self.is_main_process and not os.path.exists(self.basedir):
             os.mkdir(self.basedir)
+        if getattr(self.opt, 'distributed', False) and dist.is_initialized():
+            dist.barrier()
         
         opt = self.opt
         
         """Model"""
         self.model = models.__dict__[self.opt.model]()
         self.model.initialize(opt)
-        if not opt.no_log:
+        if self.is_main_process and not opt.no_log:
             self.writer = util.get_summary_writer(os.path.join(self.basedir, 'logs'))
             self.visualizer = Visualizer(opt)
 
     def train(self, train_loader, **kwargs):
-        print('\nEpoch: %d' % self.epoch)
+        if hasattr(train_loader, 'sampler') and hasattr(train_loader.sampler, 'set_epoch'):
+            train_loader.sampler.set_epoch(self.epoch)
+
+        if self.is_main_process:
+            print('\nEpoch: %d' % self.epoch)
         avg_meters = util.AverageMeters()
         opt = self.opt
         model = self.model
@@ -49,10 +56,11 @@ class Engine(object):
             model.optimize_parameters(**kwargs)
             
             errors = model.get_current_errors()
-            avg_meters.update(errors)
-            util.progress_bar(i, len(train_loader), str(avg_meters))
+            if self.is_main_process:
+                avg_meters.update(errors)
+                util.progress_bar(i, len(train_loader), str(avg_meters))
             
-            if not opt.no_log:
+            if self.is_main_process and not opt.no_log:
                 util.write_loss(self.writer, 'train', avg_meters, iterations)
             
                 if iterations % opt.display_freq == 0 and opt.display_id != 0:
@@ -63,29 +71,33 @@ class Engine(object):
                     t = (time.time() - iter_start_time)          
 
             self.iterations += 1
-            if opt.save_iter_freq > 0 and self.iterations % opt.save_iter_freq == 0:
+            if self.is_main_process and opt.save_iter_freq > 0 and self.iterations % opt.save_iter_freq == 0:
                 print('saving the latest model at iter %d' % self.iterations)
                 model.save(label='latest')
 
         self.epoch += 1
 
-        if self.epoch % opt.save_epoch_freq == 0:
+        if self.is_main_process and self.epoch % opt.save_epoch_freq == 0:
             print('saving the model at epoch %d, iters %d' %
                 (self.epoch, self.iterations))
             model.save()
 
-        print('saving the latest model at the end of epoch %d, iters %d' %
-            (self.epoch, self.iterations))
-        model.save(label='latest')
+        if self.is_main_process:
+            print('saving the latest model at the end of epoch %d, iters %d' %
+                (self.epoch, self.iterations))
+            model.save(label='latest')
 
-        if not self.opt.no_log:
+        if self.is_main_process and not self.opt.no_log:
             print('Time Taken: %d sec' %
                 (time.time() - epoch_start_time))
                 
         # model.update_learning_rate()
         train_loader.reset()
+        self.barrier()
 
     def save_checkpoint(self, label='latest'):
+        if not self.is_main_process:
+            return
         print('saving checkpoint %s at epoch %d, iters %d' %
             (label, self.epoch, self.iterations))
         self.model.save(label=label)
@@ -100,9 +112,10 @@ class Engine(object):
                 index = model.eval(data, savedir=savedir, **kwargs)
                 avg_meters.update(index)
                 
-                util.progress_bar(i, len(val_loader), str(avg_meters))
+                if self.is_main_process:
+                    util.progress_bar(i, len(val_loader), str(avg_meters))
                 
-        if not opt.no_log:
+        if self.is_main_process and not opt.no_log:
             util.write_loss(self.writer, join('eval', dataset_name), avg_meters, self.epoch)
         
         if loss_key is not None:
@@ -121,7 +134,8 @@ class Engine(object):
         with torch.no_grad():
             for i, data in enumerate(test_loader):
                 model.test(data, savedir=savedir, **kwargs)
-                util.progress_bar(i, len(test_loader))
+                if self.is_main_process:
+                    util.progress_bar(i, len(test_loader))
 
     @property
     def iterations(self):
@@ -138,3 +152,11 @@ class Engine(object):
     @epoch.setter
     def epoch(self, e):
         self.model.epoch = e
+
+    @property
+    def is_main_process(self):
+        return getattr(self.opt, 'rank', 0) == 0
+
+    def barrier(self):
+        if getattr(self.opt, 'distributed', False) and dist.is_initialized():
+            dist.barrier()

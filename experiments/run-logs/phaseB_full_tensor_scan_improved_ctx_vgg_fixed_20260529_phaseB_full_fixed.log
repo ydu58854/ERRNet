@@ -1,8 +1,0 @@
-[scan] ERRNet/checkpoints/errnet_phaseB_full_improved_ctx_vgg_fixed/errnet_080_00632892.pt
-tensors: 656
-elements: 86671568
-nonfinite_tensors: 0
-nonfinite_elements: 0
-nan_elements: 0
-inf_elements: 0
-result: finite

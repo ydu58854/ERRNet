@@ -46,6 +46,8 @@ class BaseModel():
         print(self.optimizers[-1])
 
     def save(self, label=None):
+        if getattr(self.opt, 'rank', 0) != 0:
+            return
         epoch = self.epoch
         iterations = self.iterations
 

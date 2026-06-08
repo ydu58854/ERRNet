@@ -2,6 +2,12 @@
 
 The implementation of CVPR 2019 paper "[Single Image Reflection Removal Exploiting Misaligned Training Data and Network Enhancements](https://arxiv.org/abs/1904.00637)"
 
+For the DIP26 course reproduction, improved-method commands, benchmark
+protocol, and artifact policy, see [README_DIP26.md](README_DIP26.md). Datasets,
+checkpoints, generated results, and run logs are intentionally kept outside the
+Git repository and should be provided through separate download links when
+needed.
+
 *News* (19/09/2019): Fix the broken link; our pretrained model and collected unaligned dataset are now available at [OneDrive](https://1drv.ms/f/s!AqddfvhavTRih3n3W0P29cxVIlfM)   
 
 ## Highlights

@@ -12,3 +12,13 @@ bak
 results
 raw_data
 processed_data
+experiments/run-logs/
+experiments/visual-review/
+experiments/results-*.md
+experiments/report-materials.md
+experiments/delivery-checklist.md
+datasets/raw_data/
+datasets/processed_data/
+_downloads/
+*.pt
+*.ckpt

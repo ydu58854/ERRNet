@@ -32,6 +32,26 @@ class GradientLoss(nn.Module):
         return self.loss(predict_gradx, target_gradx) + self.loss(predict_grady, target_grady)
 
 
+class LaplacianLoss(nn.Module):
+    def __init__(self):
+        super(LaplacianLoss, self).__init__()
+        kernel = torch.tensor(
+            [[0.0, 1.0, 0.0],
+             [1.0, -4.0, 1.0],
+             [0.0, 1.0, 0.0]]
+        ).view(1, 1, 3, 3)
+        self.register_buffer('kernel', kernel)
+        self.loss = nn.L1Loss()
+
+    def _laplacian(self, tensor):
+        channels = tensor.shape[1]
+        kernel = self.kernel.to(device=tensor.device, dtype=tensor.dtype).expand(channels, 1, 3, 3)
+        return F.conv2d(tensor, kernel, padding=1, groups=channels)
+
+    def forward(self, predict, target):
+        return self.loss(self._laplacian(predict), self._laplacian(target))
+
+
 class MultipleLoss(nn.Module):
     def __init__(self, losses, weight=None):
         super(MultipleLoss, self).__init__()
@@ -157,16 +177,18 @@ class GANLoss(nn.Module):
         target_tensor = None
         if target_is_real:
             create_label = ((self.real_label_var is None) or
-                            (self.real_label_var.numel() != input.numel()))
+                            (self.real_label_var.numel() != input.numel()) or
+                            (self.real_label_var.device != input.device))
             if create_label:
-                real_tensor = self.Tensor(input.size()).fill_(self.real_label)
+                real_tensor = input.new_full(input.size(), self.real_label)
                 self.real_label_var = real_tensor
             target_tensor = self.real_label_var
         else:
             create_label = ((self.fake_label_var is None) or
-                            (self.fake_label_var.numel() != input.numel()))
+                            (self.fake_label_var.numel() != input.numel()) or
+                            (self.fake_label_var.device != input.device))
             if create_label:
-                fake_tensor = self.Tensor(input.size()).fill_(self.fake_label)
+                fake_tensor = input.new_full(input.size(), self.fake_label)
                 self.fake_label_var = fake_tensor
             target_tensor = self.fake_label_var
         return target_tensor

@@ -1,5 +1,0 @@
-COMMAND: timeout 60s conda run -n ERRNet python train_errnet.py --name errnet_ckpt_interrupt_smoke_20260526 --hyper --pixel_loss_weight 0.2 --gradient_loss_weight 0.4 --max_dataset_size 2 --nThreads 0 --display_id 0
-START: 2026-05-26T19:34:28+08:00
-
-END: 2026-05-26T19:35:28+08:00
-EXIT_STATUS: 124
