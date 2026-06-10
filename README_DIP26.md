@@ -5,7 +5,7 @@
 ### 1.1 Clone the repository
 
 ```bash
-git clone https://github.com/innerway-xq/ERRNet
+git clone https://github.com/ydu58854/ERRNet.git
 cd ERRNet
 git checkout dip26
 ```
